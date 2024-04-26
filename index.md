@@ -7,6 +7,6 @@ Zhuang Wenzi is an associate professor of accounting at Dongbei University of Fi
 
 
 ## Contact Information
-- E-mail: [zhuangwenzi@dufe.edu.cn](zhuangwenzi@dufe.edu.cn)
+- E-mail: [zhuangwenzi@dufe.edu.cn](mailto:zhuangwenzi@dufe.edu.cn)
 - Office Hour: Please e-mail for an appointment.
 - Address: TBD
