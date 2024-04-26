@@ -1,6 +1,6 @@
 # Zhuang, Wenzi
 
-[Research]   [CV]  [Teaching](https://github.com/Wenzi-Zhuang/Wenzi-Zhuang.github.io/blob/main/teaching.html)
+[Research]   [CV]  [Teaching](https://github.com/Wenzi-Zhuang/Wenzi-Zhuang.github.io/blob/main/teaching.md)
 
 I am an associate professor of accounting at Dongbei University of Finance and Economics (DUFE)
 
