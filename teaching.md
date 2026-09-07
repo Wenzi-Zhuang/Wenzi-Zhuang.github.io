@@ -1,5 +1,3 @@
-## [Zhuang, Wenzi](https://wenzi-zhuang.github.io/)
-
 ## 教学 
 **[实证方法与论文写作](<teaching/Intro to Accounting Research 101/Spring 2025/readme.md>)（本科）**
 
