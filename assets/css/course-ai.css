@@ -316,6 +316,123 @@ body {
   gap: 0.7rem;
 }
 
+.publication-section,
+.project-section {
+  margin-bottom: 3.2rem;
+}
+
+.section-heading-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading-row h2 {
+  margin: 0.45rem 0 0;
+  font-family: var(--site-serif);
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  font-weight: 600;
+}
+
+.section-heading-row > span {
+  color: var(--course-muted);
+  font-size: 0.76rem;
+}
+
+.publication-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--course-white);
+  border: 1px solid var(--course-line);
+  border-radius: 13px;
+  overflow: hidden;
+}
+
+.publication-item {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: 1.55rem;
+  border-bottom: 1px solid var(--course-line);
+}
+
+.publication-item:last-child {
+  border-bottom: 0;
+}
+
+.publication-year {
+  padding-top: 0.18rem;
+  color: var(--course-accent);
+  font-family: var(--site-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.publication-item h3 {
+  margin: 0 0 0.55rem;
+  font-family: var(--site-serif);
+  font-size: clamp(1.02rem, 2vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.48;
+}
+
+.publication-item h3 a {
+  color: var(--course-ink) !important;
+  text-decoration: none !important;
+}
+
+.publication-item h3 a:hover {
+  color: var(--course-accent) !important;
+}
+
+.publication-item p {
+  margin: 0.18rem 0;
+  color: var(--course-muted);
+  font-size: 0.79rem;
+  line-height: 1.55;
+}
+
+.publication-item .journal-name {
+  color: #34463e;
+  font-weight: 600;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.project-grid article {
+  padding: 1.45rem;
+  background: var(--course-white);
+  border: 1px solid var(--course-line);
+  border-radius: 12px;
+}
+
+.project-grid article > span {
+  color: var(--course-accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.project-grid h3 {
+  margin: 0.65rem 0 0.55rem;
+  font-family: var(--site-serif);
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.project-grid p {
+  margin: 0;
+  color: var(--course-muted);
+  font-size: 0.78rem;
+}
+
 .research-card {
   display: grid;
   grid-template-columns: 55px 1fr;
@@ -388,6 +505,22 @@ body {
   font-weight: 700;
   text-decoration: none !important;
   background: #fff;
+  border-radius: 8px;
+}
+
+.external-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.55rem;
+}
+
+.secondary-link {
+  padding: 0.68rem 0.9rem;
+  color: #fff !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.38);
   border-radius: 8px;
 }
 
@@ -746,8 +879,15 @@ body {
   }
 
   .profile-grid,
-  .course-catalog {
+  .course-catalog,
+  .project-grid {
     grid-template-columns: 1fr;
+  }
+
+  .publication-item {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+    padding: 1.25rem;
   }
 
   .page-heading {
@@ -757,6 +897,10 @@ body {
   .research-link-card {
     align-items: start;
     flex-direction: column;
+  }
+
+  .external-actions {
+    width: 100%;
   }
 
   .site-footer {

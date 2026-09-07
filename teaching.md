@@ -20,16 +20,16 @@ title: Zhuang, Wenzi
 
   <section class="course-catalog" aria-label="课程列表">
     <a class="catalog-card featured" href="/teaching/Intro%20to%20Accounting%20Research%20101/Spring%202025/readme.html">
-      <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2><p>研究问题、实证设计、文献阅读与学术表达。</p></div>
-      <span class="card-action">AI 课程主页 →</span>
+      <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
+      <span class="card-action">课程主页 →</span>
     </a>
     <a class="catalog-card featured" href="/teaching/Financial%20Accounting%20101/Spring%202025/readme.html">
-      <div><span class="card-tag">本科 · 2017–2026</span><h2>会计学</h2><p>会计基础、业务分析、账务处理与报表理解。</p></div>
-      <span class="card-action">AI 课程主页 →</span>
+      <div><span class="card-tag">本科 · 2017–2026</span><h2>会计学</h2></div>
+      <span class="card-action">课程主页 →</span>
     </a>
-    <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021，2025</span><h2>财务会计</h2><p>财务报告、会计确认与计量。</p></div></article>
-    <article class="catalog-card"><div><span class="card-tag">学硕 · 2020，2022</span><h2>财务管理</h2><p>公司财务决策与价值分析。</p></div></article>
-    <article class="catalog-card"><div><span class="card-tag">博士 · 2022</span><h2>会计审计理论</h2><p>会计与审计理论前沿。</p></div></article>
+    <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021，2025</span><h2>财务会计</h2></div></article>
+    <article class="catalog-card"><div><span class="card-tag">学硕 · 2020，2022</span><h2>财务管理</h2></div></article>
+    <article class="catalog-card"><div><span class="card-tag">博士 · 2022</span><h2>会计审计理论</h2></div></article>
   </section>
 
   <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><a href="mailto:zhuangwenzi@dufe.edu.cn">联系教师</a></footer>
