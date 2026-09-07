@@ -14,12 +14,10 @@ title: Zhuang, Wenzi
 
   <header class="page-heading">
     <p class="eyebrow">Research</p>
-    <h1>研究</h1>
-    <p>研究领域涵盖会计与资本市场、劳动力市场和宏观资源配置，重点关注会计准则、计量、行为与信息的经济后果。</p>
+    <h1>论文发表</h1>
   </header>
 
-  <section class="publication-section" aria-labelledby="publications-title">
-    <div class="section-heading-row"><div><p class="section-label">Selected works</p><h2 id="publications-title">代表性学术成果</h2></div><span>5 篇</span></div>
+  <section class="publication-section" aria-label="论文发表列表">
     <ol class="publication-list">
       <li class="publication-item">
         <span class="publication-year">2025</span>
@@ -43,18 +41,6 @@ title: Zhuang, Wenzi
       </li>
     </ol>
   </section>
-
-  <section class="project-section" aria-labelledby="projects-title">
-    <div class="section-heading-row"><div><p class="section-label">Research grants</p><h2 id="projects-title">主要科研项目</h2></div></div>
-    <div class="project-grid">
-      <article><span>主持 · 2024</span><h3>同行公司信息披露与企业劳动报酬—劳动生产率增长同步性</h3><p>国家自然科学基金青年项目 · 72302243</p></article>
-      <article><span>参与 · 2019</span><h3>财务报告舞弊的劳动力市场后果研究</h3><p>国家自然科学基金面上项目 · 71872176</p></article>
-      <article><span>参与 · 2018</span><h3>会计、审计对企业经营管理与宏观经济发展的影响研究</h3><p>国家自然科学基金重大项目 · 71790603</p></article>
-      <article><span>参与 · 2018</span><h3>研发支出管理与绩效评价研究</h3><p>财政部管理会计专项课题</p></article>
-    </div>
-  </section>
-
-  <aside class="research-link-card"><div><p class="section-label">External profiles</p><h2>更多研究成果</h2><p>访问 SSRN 或东北财经大学个人主页，查看公开论文及最新信息。</p></div><div class="external-actions"><a class="primary-link" href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN ↗</a><a class="secondary-link" href="https://kjxy.dufe.edu.cn/content_82157.html">DUFE ↗</a></div></aside>
 
   <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><a href="mailto:zhuangwenzi@dufe.edu.cn">学术联系</a></footer>
 </main>

@@ -15,17 +15,16 @@ title: Zhuang, Wenzi
   <header class="page-heading">
     <p class="eyebrow">Teaching</p>
     <h1>课程列表</h1>
-    <p>课程信息与 AI 教学实验平台。点击带有“AI 课程主页”标识的课程，进入互动式课程助教。</p>
   </header>
 
   <section class="course-catalog" aria-label="课程列表">
     <a class="catalog-card featured" href="/teaching/Intro%20to%20Accounting%20Research%20101/Spring%202025/readme.html">
       <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
-      <span class="card-action">课程主页 →</span>
+      <span class="card-action">课程主页-AI互动平台 →</span>
     </a>
     <a class="catalog-card featured" href="/teaching/Financial%20Accounting%20101/Spring%202025/readme.html">
       <div><span class="card-tag">本科 · 2017–2026</span><h2>会计学</h2></div>
-      <span class="card-action">课程主页 →</span>
+      <span class="card-action">课程主页-AI互动平台 →</span>
     </a>
     <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021，2025</span><h2>财务会计</h2></div></article>
     <article class="catalog-card"><div><span class="card-tag">学硕 · 2020，2022</span><h2>财务管理</h2></div></article>

@@ -155,7 +155,7 @@ body {
 }
 
 .profile-hero h1 {
-  font-size: clamp(3rem, 8vw, 5.6rem);
+  font-size: clamp(2.65rem, 6vw, 4.45rem);
   line-height: 1;
 }
 
@@ -210,8 +210,13 @@ body {
 .profile-about p:not(.section-label) {
   margin: 0 0 1rem;
   font-family: var(--site-serif);
-  font-size: clamp(1.12rem, 2vw, 1.32rem);
+  font-size: clamp(1rem, 1.7vw, 1.14rem);
   line-height: 1.85;
+}
+
+.profile-grid .section-label {
+  font-size: 0.94rem;
+  letter-spacing: 0.08em;
 }
 
 .contact-card dl {

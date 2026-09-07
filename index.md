@@ -20,9 +20,7 @@ title: Zhuang, Wenzi
 
   <section class="profile-hero">
     <div>
-      <p class="eyebrow"><span data-zh>会计学者 · 教师</span><span data-en hidden>Accounting Scholar · Educator</span></p>
       <h1><span data-zh>庄汶资</span><span data-en hidden>Wenzi Zhuang</span></h1>
-      <p class="profile-role"><span data-zh>东北财经大学会计学院副教授</span><span data-en hidden>Associate Professor of Accounting<br>Dongbei University of Finance and Economics</span></p>
     </div>
     <div class="profile-links">
       <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN <span>↗</span></a>
@@ -52,7 +50,7 @@ title: Zhuang, Wenzi
     </aside>
   </section>
 
-  <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><span data-zh>学术 · 教学 · 开放交流</span><span data-en hidden>Research · Teaching · Open Exchange</span></footer>
+  <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span></footer>
 </main>
 
 <script src="/assets/js/site.js" defer></script>
