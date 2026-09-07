@@ -24,7 +24,7 @@ title: Zhuang, Wenzi
     </div>
     <div class="profile-links">
       <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN <span>↗</span></a>
-      <a href="https://kjxy.dufe.edu.cn/content_82157.html"><span data-zh>东北财经大学个人页</span><span data-en hidden>DUFE Profile</span> <span>↗</span></a>
+      <a href="https://kjxy.dufe.edu.cn/content_82157.html"><span data-zh>东北财经大学个人主页</span><span data-en hidden>DUFE Profile</span> <span>↗</span></a>
     </div>
   </section>
 

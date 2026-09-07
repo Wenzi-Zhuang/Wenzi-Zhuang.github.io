@@ -33,11 +33,11 @@ title: Zhuang, Wenzi
       </li>
       <li class="publication-item">
         <span class="publication-year">2018</span>
-        <div><h3><a href="https://xueshu.baidu.com/s?wd=%E6%96%B0%E4%BC%9A%E8%AE%A1%E5%87%86%E5%88%99%E5%AE%9E%E6%96%BD%E4%B8%8E%E4%BC%81%E4%B8%9A%E8%B5%84%E6%9C%AC%E7%BB%93%E6%9E%84%E4%BC%98%E5%8C%96%E8%B0%83%E6%95%B4">新会计准则实施与企业资本结构优化调整 ↗</a></h3><p>张博、庄汶资、袁红柳</p><p class="journal-name">《会计研究》第11期，21–27</p></div>
+        <div><h3><a href="https://kns.cnki.net/kcms2/article/abstract?v=HTCMX8yYpPGc0C0vD_rVFL3sZBHJTfBA0x-fvDQeguiR6-550aQIXQA0hHmgiBLu2MjltvGraUDMMSPcNawTJw3KPSNq_rTMKiiKbGvdJ0eBKdvL-STq4ZBNvmy1p5RnhswGuHyWLBTMblxnlflbX8HxIX96hBRCrWt6iBRlSktbfzxWTYcV5Q==&amp;uniplatform=NZKPT&amp;language=CHS">新会计准则实施与企业资本结构优化调整 ↗</a></h3><p>张博、庄汶资、袁红柳</p><p class="journal-name">《会计研究》第11期，21–27</p></div>
       </li>
       <li class="publication-item">
         <span class="publication-year">2017</span>
-        <div><h3><a href="https://xueshu.baidu.com/s?wd=%E4%BC%9A%E8%AE%A1%E5%87%86%E5%88%99%E4%B8%8E%E6%89%80%E5%BE%97%E7%A8%8E%E6%B3%95%E5%8D%8F%E8%B0%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E7%90%86%E8%AE%BA%E7%BB%BC%E8%BF%B0">会计准则与所得税法协调：一个理论综述 ↗</a></h3><p>李有华、崔毓佳、叶康涛、庄汶资</p><p class="journal-name">《财会月刊》</p></div>
+        <div><h3><a href="https://kns.cnki.net/kcms2/article/abstract?v=HTCMX8yYpPFZwpXeWAIbcWDYoKkZ7SXyEogtCjIdy9fwAUFrQyYj74mcJ9O8cRj1lIGITIBA1PmxoQFOTFi63anblIVsCGtIOuWSjbpIjNbbB0M9Xp9sTf_BGwwd5DCgukQP4DsWrf19sfhEr3b7ERnmofcVRdWRc0CahMpmyvXNbDi86yXRyQ==&amp;uniplatform=NZKPT&amp;language=CHS">会计准则与所得税法协调：一个理论综述 ↗</a></h3><p>李有华、崔毓佳、叶康涛、庄汶资</p><p class="journal-name">《财会月刊》，2017 · ISSN 1004-0994</p></div>
       </li>
     </ol>
   </section>
