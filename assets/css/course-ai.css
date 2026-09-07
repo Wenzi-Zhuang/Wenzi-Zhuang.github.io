@@ -1,0 +1,345 @@
+:root {
+  --course-ink: #17211d;
+  --course-muted: #65716b;
+  --course-line: #dfe7e2;
+  --course-soft: #f3f7f4;
+  --course-accent: #176b52;
+  --course-accent-strong: #0e543f;
+  --course-highlight: #e3f2eb;
+  --course-warm: #fbf8f1;
+  --course-white: #ffffff;
+}
+
+.markdown-body > h1:first-child {
+  display: none;
+}
+
+.course-ai {
+  color: var(--course-ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.course-ai * {
+  box-sizing: border-box;
+}
+
+.course-ai button,
+.course-ai input,
+.course-ai textarea {
+  font: inherit;
+}
+
+.course-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.2rem;
+}
+
+.course-home {
+  color: var(--course-accent);
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.course-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.status-pill {
+  padding: 0.28rem 0.62rem;
+  color: var(--course-muted);
+  font-size: 0.76rem;
+  background: var(--course-soft);
+  border: 1px solid var(--course-line);
+  border-radius: 999px;
+}
+
+.course-hero {
+  max-width: 760px;
+  margin-bottom: 2rem;
+}
+
+.course-kicker {
+  margin: 0 0 0.7rem;
+  color: var(--course-accent);
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.course-ai .course-title {
+  margin: 0;
+  font-size: clamp(1.8rem, 4vw, 2.75rem);
+  line-height: 1.18;
+  letter-spacing: -0.035em;
+}
+
+.course-intro {
+  max-width: 680px;
+  margin: 0.85rem 0 0;
+  color: var(--course-muted);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.course-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(260px, 0.75fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.ai-panel,
+.side-card {
+  background: var(--course-white);
+  border: 1px solid var(--course-line);
+  border-radius: 14px;
+  box-shadow: 0 10px 32px rgba(28, 56, 44, 0.05);
+}
+
+.ai-panel {
+  overflow: hidden;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border-bottom: 1px solid var(--course-line);
+}
+
+.panel-heading h2,
+.side-card h2 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0;
+}
+
+.demo-label {
+  color: var(--course-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.chat-log {
+  min-height: 285px;
+  max-height: 440px;
+  padding: 1.2rem;
+  overflow-y: auto;
+  background: linear-gradient(180deg, #fbfdfc 0%, #f6faf7 100%);
+}
+
+.message {
+  max-width: 88%;
+  margin-bottom: 0.9rem;
+  padding: 0.78rem 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.62;
+  border-radius: 12px;
+}
+
+.message-assistant {
+  background: var(--course-white);
+  border: 1px solid var(--course-line);
+  border-top-left-radius: 3px;
+}
+
+.message-user {
+  margin-left: auto;
+  color: #fff;
+  background: var(--course-accent);
+  border-top-right-radius: 3px;
+}
+
+.suggestions {
+  display: flex;
+  gap: 0.55rem;
+  padding: 0 1.15rem 1rem;
+  overflow-x: auto;
+  background: #f6faf7;
+}
+
+.prompt-chip {
+  flex: 0 0 auto;
+  padding: 0.46rem 0.72rem;
+  color: var(--course-accent-strong);
+  font-size: 0.78rem;
+  background: var(--course-highlight);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.composer {
+  display: flex;
+  gap: 0.65rem;
+  padding: 1rem;
+  border-top: 1px solid var(--course-line);
+}
+
+.composer textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 130px;
+  padding: 0.68rem 0.75rem;
+  resize: vertical;
+  color: var(--course-ink);
+  background: #fff;
+  border: 1px solid #cbd8d1;
+  border-radius: 9px;
+  outline: none;
+}
+
+.composer textarea:focus {
+  border-color: var(--course-accent);
+  box-shadow: 0 0 0 3px rgba(23, 107, 82, 0.12);
+}
+
+.send-button {
+  align-self: stretch;
+  min-width: 76px;
+  padding: 0.6rem 1rem;
+  color: #fff;
+  font-weight: 700;
+  background: var(--course-accent);
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.send-button:hover {
+  background: var(--course-accent-strong);
+}
+
+.side-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.side-card {
+  padding: 1.05rem;
+}
+
+.side-copy {
+  margin: 0.45rem 0 0.9rem;
+  color: var(--course-muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.resource-list,
+.skill-list,
+.file-list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resource-item,
+.skill-item {
+  padding: 0.7rem 0.75rem;
+  background: var(--course-soft);
+  border-radius: 9px;
+}
+
+.resource-item strong,
+.skill-item strong {
+  display: block;
+  font-size: 0.86rem;
+}
+
+.resource-item span,
+.skill-item span {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--course-muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.upload-zone {
+  display: block;
+  padding: 1rem;
+  text-align: center;
+  color: var(--course-muted);
+  font-size: 0.8rem;
+  background: var(--course-warm);
+  border: 1px dashed #c9c1ad;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.upload-zone strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--course-ink);
+}
+
+.upload-zone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.file-list {
+  margin-top: 0.65rem;
+}
+
+.file-list li {
+  padding: 0.45rem 0.6rem;
+  color: var(--course-muted);
+  font-size: 0.76rem;
+  background: var(--course-soft);
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+}
+
+.privacy-note {
+  margin: 0.65rem 0 0;
+  color: #8a6a2f;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .course-topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  .course-status {
+    justify-content: flex-start;
+  }
+
+  .course-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-log {
+    min-height: 240px;
+  }
+
+  .composer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .send-button {
+    min-height: 42px;
+  }
+}
+

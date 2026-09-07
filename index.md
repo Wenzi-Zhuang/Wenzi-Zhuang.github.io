@@ -14,12 +14,13 @@ title: Zhuang, Wenzi
   <h3>联系方式</h3>
   <ul>
     <li>电子邮箱：<a href="mailto:zhuangwenzi@dufe.edu.cn">zhuangwenzi@dufe.edu.cn</a></li>
-    <li>办公时间：请通过电子邮件预约。</li>
-    <li>办公地址：师道斋101</li>
+    <li>办公地址：师道斋101(会面请邮件预约)</li>
   </ul>
 </section>
 
 <section id="content-en" lang="en" hidden>
+  <h2>Zhuang, Wenzi</h2>
+
   <p><a href="teaching.html">Teaching</a> &#8195;&#8195; <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN</a> &#8195;&#8195; <a href="https://kjxy.dufe.edu.cn/content_82157.html">DUFE Personal Website</a></p>
 
   <p>Zhuang Wenzi is an associate professor of accounting at Dongbei University of Finance and Economics (DUFE). He holds an undergraduate degree from Central University of Finance and Economics and master's and Ph.D. degrees from Renmin University of China. Before joining DUFE in 2024, he taught at Sun Yat-sen University. His research focuses on financial accounting and auditing, particularly the real effects of accounting standards, measurement, behavior, and information. He has published several articles in peer-reviewed journals. In 2022, he received the PwC 3535 Best Paper Award.</p>
