@@ -26,8 +26,8 @@ title: Zhuang, Wenzi
       <div><span class="card-tag">本科 · 2026–2027</span><h2>会计学</h2></div>
       <span class="card-action">课程AI互动平台 →</span>
     </a>
-    <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021，2025</span><h2>财务会计</h2></div></article>
-    <article class="catalog-card"><div><span class="card-tag">学硕 · 2020，2022</span><h2>财务管理</h2></div></article>
+    <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021、2025</span><h2>财务会计</h2></div></article>
+    <article class="catalog-card"><div><span class="card-tag">学硕 · 2020、2022</span><h2>财务管理</h2></div></article>
     <article class="catalog-card"><div><span class="card-tag">博士 · 2022</span><h2>会计审计理论</h2></div></article>
   </section>
 
