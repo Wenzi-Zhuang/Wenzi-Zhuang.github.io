@@ -2,83 +2,57 @@
 title: Zhuang, Wenzi
 ---
 
-<button id="language-toggle" type="button" aria-label="Switch to English" aria-controls="content-zh content-en">English</button>
+<link rel="stylesheet" href="/assets/css/course-ai.css">
 
-<section id="content-zh" lang="zh-CN">
-  <h2>庄汶资</h2>
+<main class="site-shell profile-page" data-language-page>
+  <header class="site-header">
+    <a class="site-brand" href="/" aria-label="返回首页">
+      <span class="brand-mark">WZ</span>
+      <span><strong>庄汶资</strong><small>Wenzi Zhuang</small></span>
+    </a>
+    <nav class="site-nav" aria-label="主要导航">
+      <a class="active" href="/"><span data-zh>首页</span><span data-en hidden>Home</span></a>
+      <a href="/research.html"><span data-zh>研究</span><span data-en hidden>Research</span></a>
+      <a href="/teaching.html"><span data-zh>教学</span><span data-en hidden>Teaching</span></a>
+      <button class="language-button" type="button" data-language-toggle aria-label="Switch to English">EN</button>
+    </nav>
+  </header>
 
-  <p><a href="teaching.html">教学</a> &#8195;&#8195; <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN</a> &#8195;&#8195; <a href="https://kjxy.dufe.edu.cn/content_82157.html">DUFE个人页</a></p>
+  <section class="profile-hero">
+    <div>
+      <p class="eyebrow"><span data-zh>会计学者 · 教师</span><span data-en hidden>Accounting Scholar · Educator</span></p>
+      <h1><span data-zh>庄汶资</span><span data-en hidden>Wenzi Zhuang</span></h1>
+      <p class="profile-role"><span data-zh>东北财经大学会计学院副教授</span><span data-en hidden>Associate Professor of Accounting<br>Dongbei University of Finance and Economics</span></p>
+    </div>
+    <div class="profile-links">
+      <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN <span>↗</span></a>
+      <a href="https://kjxy.dufe.edu.cn/content_82157.html"><span data-zh>东北财经大学个人页</span><span data-en hidden>DUFE Profile</span> <span>↗</span></a>
+    </div>
+  </section>
 
-  <p>东北财经大学会计学院副教授，博士毕业于中国人民大学。研究领域为财务会计与审计，重点关注会计准则、计量、行为与信息的经济后果。已在同行评审期刊发表多篇论文。2022年获普华永道“3535”最佳论文奖。</p>
+  <section class="profile-grid">
+    <article class="content-card profile-about">
+      <p class="section-label"><span data-zh>个人简介</span><span data-en hidden>About</span></p>
+      <div data-zh>
+        <p>东北财经大学会计学院副教授，博士毕业于中国人民大学。研究领域为财务会计与审计，重点关注会计准则、计量、行为与信息的经济后果。</p>
+        <p>已在同行评审期刊发表多篇论文，2022年获普华永道“3535”最佳论文奖。</p>
+      </div>
+      <div data-en hidden>
+        <p>Wenzi Zhuang is an associate professor of accounting at Dongbei University of Finance and Economics. He received his Ph.D. from Renmin University of China.</p>
+        <p>His research focuses on financial accounting and auditing, particularly the real effects of accounting standards, measurement, behavior, and information. In 2022, he received the PwC 3535 Best Paper Award.</p>
+      </div>
+    </article>
 
-  <h3>联系方式</h3>
-  <ul>
-    <li>电子邮箱：<a href="mailto:zhuangwenzi@dufe.edu.cn">zhuangwenzi@dufe.edu.cn</a></li>
-    <li>办公地址：师道斋101(会面请邮件预约)</li>
-  </ul>
-</section>
+    <aside class="content-card contact-card">
+      <p class="section-label"><span data-zh>联系方式</span><span data-en hidden>Contact</span></p>
+      <dl>
+        <div><dt><span data-zh>邮箱</span><span data-en hidden>Email</span></dt><dd><a href="mailto:zhuangwenzi@dufe.edu.cn">zhuangwenzi@dufe.edu.cn</a></dd></div>
+        <div><dt><span data-zh>办公室</span><span data-en hidden>Office</span></dt><dd><span data-zh>师道斋 101（会面请邮件预约）</span><span data-en hidden>Shidaozhai 101<br>Email for an appointment</span></dd></div>
+      </dl>
+    </aside>
+  </section>
 
-<section id="content-en" lang="en" hidden>
-  <h2>Zhuang, Wenzi</h2>
+  <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><span data-zh>学术 · 教学 · 开放交流</span><span data-en hidden>Research · Teaching · Open Exchange</span></footer>
+</main>
 
-  <p><a href="teaching.html">Teaching</a> &#8195;&#8195; <a href="https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=4592798">SSRN</a> &#8195;&#8195; <a href="https://kjxy.dufe.edu.cn/content_82157.html">DUFE Personal Website</a></p>
-
-  <p>Zhuang Wenzi is an associate professor of accounting at Dongbei University of Finance and Economics (DUFE). He holds an undergraduate degree from Central University of Finance and Economics and master's and Ph.D. degrees from Renmin University of China. Before joining DUFE in 2024, he taught at Sun Yat-sen University. His research focuses on financial accounting and auditing, particularly the real effects of accounting standards, measurement, behavior, and information. He has published several articles in peer-reviewed journals. In 2022, he received the PwC 3535 Best Paper Award.</p>
-
-  <h3>Contact Information</h3>
-  <ul>
-    <li>Email: <a href="mailto:zhuangwenzi@dufe.edu.cn">zhuangwenzi@dufe.edu.cn</a></li>
-    <li>Office hours: Please email for an appointment.</li>
-    <li>Address：Shidaozhai 101</li>
-  </ul>
-</section>
-
-<style>
-  #language-toggle {
-    float: right;
-    margin: 0 0 1rem 1rem;
-    padding: 0.3rem 0.75rem;
-    color: inherit;
-    font: inherit;
-    background: transparent;
-    border: 1px solid #d0d7de;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-
-  #language-toggle:hover {
-    background: #f6f8fa;
-  }
-</style>
-
-<script>
-  (function () {
-    var toggle = document.getElementById('language-toggle');
-    var contentZh = document.getElementById('content-zh');
-    var contentEn = document.getElementById('content-en');
-
-    function setLanguage(language) {
-      var showEnglish = language === 'en';
-      contentZh.hidden = showEnglish;
-      contentEn.hidden = !showEnglish;
-      toggle.textContent = showEnglish ? '中文' : 'English';
-      toggle.setAttribute('aria-label', showEnglish ? '切换到中文' : 'Switch to English');
-      toggle.setAttribute('aria-pressed', String(showEnglish));
-      document.documentElement.lang = showEnglish ? 'en' : 'zh-CN';
-    }
-
-    var language = 'zh';
-    try {
-      language = localStorage.getItem('homepage-language') || 'zh';
-    } catch (error) {}
-    setLanguage(language);
-
-    toggle.addEventListener('click', function () {
-      var nextLanguage = contentEn.hidden ? 'en' : 'zh';
-      setLanguage(nextLanguage);
-      try {
-        localStorage.setItem('homepage-language', nextLanguage);
-      } catch (error) {}
-    });
-  }());
-</script>
+<script src="/assets/js/site.js" defer></script>

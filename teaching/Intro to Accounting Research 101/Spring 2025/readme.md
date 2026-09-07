@@ -4,7 +4,12 @@ title: Zhuang, Wenzi
 
 <link rel="stylesheet" href="/assets/css/course-ai.css">
 
-<main class="course-ai" data-course-ai>
+<main class="site-shell course-ai" data-course-ai>
+  <header class="site-header">
+    <a class="site-brand" href="/" aria-label="返回首页"><span class="brand-mark">WZ</span><span><strong>庄汶资</strong><small>Wenzi Zhuang</small></span></a>
+    <nav class="site-nav" aria-label="主要导航"><a href="/">首页</a><a href="/research.html">研究</a><a class="active" href="/teaching.html">教学</a></nav>
+  </header>
+
   <nav class="course-topbar" aria-label="课程导航">
     <a class="course-home" href="/teaching.html">← 返回课程列表</a>
     <div class="course-status" aria-label="服务连接状态">
@@ -73,6 +78,8 @@ title: Zhuang, Wenzi
       </section>
     </aside>
   </div>
+
+  <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><span>AI Course Studio · Frontend Preview</span></footer>
 </main>
 
 <script src="/assets/js/course-ai.js" defer></script>
