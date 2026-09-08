@@ -4,82 +4,69 @@ title: Zhuang, Wenzi
 
 <link rel="stylesheet" href="/assets/css/course-ai.css">
 
-<main class="site-shell course-ai" data-course-ai>
-  <header class="site-header">
-    <a class="site-brand" href="/" aria-label="返回首页"><span class="brand-mark">WZ</span><span><strong>庄汶资</strong><small>Wenzi Zhuang</small></span></a>
-    <nav class="site-nav" aria-label="主要导航"><a href="/">首页</a><a href="/research.html">研究</a><a class="active" href="/teaching.html">教学</a></nav>
-  </header>
-
-  <nav class="course-topbar" aria-label="课程导航">
-    <a class="course-home" href="/teaching.html">← 返回课程列表</a>
-    <div class="course-status" aria-label="服务连接状态">
-      <span class="status-pill">DeepSeek · 待连接</span>
-      <span class="status-pill">NAS 知识库 · 待连接</span>
+<main class="chat-workspace" data-course-ai data-course-name="会计学">
+  <aside class="chat-sidebar">
+    <div class="sidebar-top">
+      <a class="workspace-back" href="/teaching.html">← 返回课程列表</a>
+      <h1>会计学</h1>
+      <button class="new-chat-button" type="button" data-new-chat>＋ 新对话</button>
     </div>
-  </nav>
 
-  <header class="course-hero">
-    <p class="course-kicker">AI Course Studio</p>
-    <h1 class="course-title">会计学</h1>
-    <p class="course-intro">面向本科生的课程 AI 助教。未来将结合课程知识库与会计 Skills，辅助理解准则、分析业务、编制分录和巩固练习。</p>
-  </header>
+    <nav class="feature-nav" aria-label="课程功能">
+      <p class="sidebar-label">功能</p>
+      <div class="feature-group">
+        <button class="feature-button active" type="button" data-feature="课程须知" data-intro="请选择需要了解的课程内容。">课程须知</button>
+        <div class="feature-subnav">
+          <button type="button" data-feature="教学大纲">教学大纲</button>
+          <button type="button" data-feature="考核要求">考核要求</button>
+          <button type="button" data-feature="会计与生活">会计与生活</button>
+          <button type="button" data-feature="会计与职业发展">会计与职业发展</button>
+        </div>
+      </div>
+      <button class="feature-button" type="button" data-feature="知识点学习">知识点学习</button>
+      <button class="feature-button" type="button" data-feature="练习与测试">练习与测试</button>
+      <button class="feature-button" type="button" data-feature="复习">复习</button>
+      <button class="feature-button" type="button" data-feature="资料提交" data-upload-trigger>资料提交</button>
+    </nav>
 
-  <div class="course-layout">
-    <section class="ai-panel" aria-labelledby="assistant-title">
-      <div class="panel-heading">
-        <h2 id="assistant-title">课程 AI 助教</h2>
-        <span class="demo-label">前端预览</span>
-      </div>
-      <div class="chat-log" data-chat-log aria-live="polite">
-        <div class="message message-assistant">你好，我是“会计学”课程助教。你可以提问会计要素、账务处理、报表关系或课程练习。</div>
-      </div>
-      <div class="suggestions" aria-label="示例问题">
-        <button class="prompt-chip" type="button" data-prompt>解释权责发生制</button>
-        <button class="prompt-chip" type="button" data-prompt>这项业务应该如何编制分录？</button>
-        <button class="prompt-chip" type="button" data-prompt>给我一道资产负债表练习</button>
-      </div>
-      <form class="composer" data-chat-form>
-        <textarea data-chat-input aria-label="输入课程问题" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
-        <button class="send-button" type="submit">发送</button>
-      </form>
+    <section class="chat-history" aria-label="对话记录">
+      <p class="sidebar-label">对话记录</p>
+      <button class="history-item active" type="button">欢迎使用课程助教</button>
+      <p class="history-empty">更多对话将在后端接入后保存</p>
     </section>
 
-    <aside class="side-stack" aria-label="课程资源">
-      <section class="side-card">
-        <h2>课程知识库</h2>
-        <p class="side-copy">未来从 NAS 检索与回答问题相关的课程资料。</p>
-        <ul class="resource-list">
-          <li class="resource-item"><strong>课程材料</strong><span>教学大纲、课件与课程要求</span></li>
-          <li class="resource-item"><strong>会计准则</strong><span>准则条文、应用指南与解释</span></li>
-          <li class="resource-item"><strong>例题与案例</strong><span>业务场景、会计分录与报表练习</span></li>
-        </ul>
-      </section>
+    <div class="sidebar-footer"><span class="connection-dot"></span>DeepSeek / NAS 待连接</div>
+  </aside>
 
-      <section class="side-card">
-        <h2>Accounting Skills</h2>
-        <p class="side-copy">未来由 NAS 加载可复用的会计学习工作流。</p>
-        <ul class="skill-list">
-          <li class="skill-item"><strong>业务分析</strong><span>识别交易实质与受影响科目</span></li>
-          <li class="skill-item"><strong>分录辅导</strong><span>分步骤解释确认与计量逻辑</span></li>
-          <li class="skill-item"><strong>练习生成</strong><span>按知识点生成题目与反馈</span></li>
-        </ul>
-      </section>
+  <section class="chat-main">
+    <header class="chat-header">
+      <div><span class="mobile-course-name">会计学</span><strong data-chat-mode>课程须知</strong></div>
+      <span class="preview-badge">前端预览</span>
+    </header>
 
-      <section class="side-card">
-        <h2>提交学习资料</h2>
-        <p class="side-copy">选择希望补充到课程知识库的文件。</p>
-        <label class="upload-zone">
-          <strong>选择本地文件</strong>
-          PDF、Word、图片或数据文件
-          <input type="file" multiple data-file-input accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg,.csv,.xlsx">
-        </label>
-        <ul class="file-list" data-file-list></ul>
-        <p class="privacy-note">当前仅显示文件名，不会上传或保存；NAS 接入后再启用资料收集。</p>
-      </section>
-    </aside>
-  </div>
+    <div class="conversation" data-chat-log aria-live="polite">
+      <div class="welcome-block">
+        <div class="assistant-avatar">会</div>
+        <h2>会计学 AI 助教</h2>
+        <p data-welcome-copy>请选择左侧功能，或直接输入你的会计问题。</p>
+        <div class="starter-grid">
+          <button type="button" data-prompt>解释权责发生制</button>
+          <button type="button" data-prompt>这项业务应该如何编制分录？</button>
+          <button type="button" data-prompt>给我一道资产负债表练习</button>
+        </div>
+      </div>
+    </div>
 
-  <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><span>AI Course Studio · Frontend Preview</span></footer>
+    <div class="chat-composer-wrap">
+      <ul class="file-list composer-files" data-file-list></ul>
+      <form class="chat-composer" data-chat-form>
+        <label class="attach-button" title="选择资料">＋<span class="sr-only">选择资料</span><input type="file" multiple data-file-input accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg,.csv,.xlsx"></label>
+        <textarea data-chat-input aria-label="输入课程问题" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
+        <button class="round-send" type="submit" aria-label="发送">↑</button>
+      </form>
+      <p class="composer-note">当前为前端演示，资料不会上传，回答也不会调用大模型。</p>
+    </div>
+  </section>
 </main>
 
 <script src="/assets/js/course-ai.js" defer></script>
