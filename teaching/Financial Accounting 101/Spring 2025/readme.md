@@ -2,9 +2,21 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-2">
 
 <main class="chat-workspace" data-course-ai data-course-name="会计学">
+  <section class="login-gate" data-login-gate>
+    <form class="login-card" data-login-form>
+      <div class="assistant-avatar">会</div>
+      <h2>进入会计学 AI 课程</h2>
+      <p>首次在此浏览器使用时需要验证，之后将自动进入。</p>
+      <label>姓名<input name="name" autocomplete="name" required maxlength="100"></label>
+      <label>学号<input name="student_no" autocomplete="username" required maxlength="64"></label>
+      <label>课程密码<input name="course_password" type="password" autocomplete="current-password" required></label>
+      <p class="form-error" data-login-error role="alert"></p>
+      <button type="submit">验证并进入</button>
+    </form>
+  </section>
   <aside class="chat-sidebar">
     <div class="sidebar-top">
       <a class="workspace-back" href="/teaching.html">← 返回课程列表</a>
@@ -35,13 +47,13 @@ title: Zhuang, Wenzi
       <p class="history-empty">更多对话将在后端接入后保存</p>
     </section>
 
-    <div class="sidebar-footer"><span class="connection-dot"></span>DeepSeek / NAS 待连接</div>
+    <div class="sidebar-footer"><span class="connection-dot"></span><span data-connection-state>正在连接课程服务器</span></div>
   </aside>
 
   <section class="chat-main">
     <header class="chat-header">
       <div><span class="mobile-course-name">会计学</span><strong data-chat-mode>课程须知</strong></div>
-      <span class="preview-badge">前端预览</span>
+      <button class="preview-badge logout-button" type="button" data-logout hidden>退出设备</button>
     </header>
 
     <div class="conversation" data-chat-log aria-live="polite">
@@ -64,9 +76,10 @@ title: Zhuang, Wenzi
         <textarea data-chat-input aria-label="输入课程问题" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
         <button class="round-send" type="submit" aria-label="发送">↑</button>
       </form>
-      <p class="composer-note">当前为前端演示，资料不会上传，回答也不会调用大模型。</p>
+      <p class="composer-note">回答由 NAS 课程资料库与 DeepSeek 生成；请核对重要会计判断。</p>
     </div>
   </section>
 </main>
 
-<script src="../../../assets/js/course-ai.js" defer></script>
+<script src="../../../assets/js/course-ai-config.js"></script>
+<script src="../../../assets/js/course-ai.js?v=20260908-2" defer></script>

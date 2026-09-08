@@ -2,7 +2,7 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-2">
 
 <main class="chat-workspace" data-course-ai data-course-name="实证方法与论文写作">
   <aside class="chat-sidebar">
@@ -75,4 +75,4 @@ title: Zhuang, Wenzi
   </section>
 </main>
 
-<script src="../../../assets/js/course-ai.js" defer></script>
+<script src="../../../assets/js/course-ai.js?v=20260908-2" defer></script>
