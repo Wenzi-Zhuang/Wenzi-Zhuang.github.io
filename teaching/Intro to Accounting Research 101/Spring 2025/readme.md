@@ -2,9 +2,20 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-2">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-3">
 
 <main class="chat-workspace" data-course-ai data-course-name="实证方法与论文写作">
+  <section class="login-gate" data-login-gate>
+    <form class="login-card" data-login-form>
+      <div class="assistant-avatar">研</div>
+      <h2>登录课程助教</h2>
+      <p>请输入管理员账号和密码。</p>
+      <label>账号<input name="username" autocomplete="username" required></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
+      <p class="form-error" data-login-error role="alert"></p>
+      <button type="submit">登录</button>
+    </form>
+  </section>
   <aside class="chat-sidebar">
     <div class="sidebar-top">
       <a class="workspace-back" href="/teaching.html">← 返回课程列表</a>
@@ -15,7 +26,7 @@ title: Zhuang, Wenzi
     <nav class="feature-nav" aria-label="课程功能">
       <p class="sidebar-label">功能</p>
       <div class="feature-group">
-        <button class="feature-button active" type="button" data-feature="课程须知" data-intro="请选择需要了解的课程内容。">课程须知</button>
+        <button class="feature-button active" type="button" data-feature="课程须知" data-intro="请选择需要了解的课程内容。" aria-expanded="false">课程须知</button>
         <div class="feature-subnav">
           <button type="button" data-feature="教学大纲">教学大纲</button>
           <button type="button" data-feature="考核要求">考核要求</button>
@@ -25,7 +36,7 @@ title: Zhuang, Wenzi
       <button class="feature-button" type="button" data-feature="头脑风暴">头脑风暴</button>
       <button class="feature-button" type="button" data-feature="选题互动">选题互动</button>
       <div class="feature-group">
-        <button class="feature-button" type="button" data-feature="评估">评估</button>
+        <button class="feature-button" type="button" data-feature="评估" aria-expanded="false">评估</button>
         <div class="feature-subnav">
           <button type="button" data-feature="论述评估">论述评估</button>
           <button type="button" data-feature="研究效度评估">研究效度评估</button>
@@ -47,13 +58,13 @@ title: Zhuang, Wenzi
   <section class="chat-main">
     <header class="chat-header">
       <div><span class="mobile-course-name">实证方法与论文写作</span><strong data-chat-mode>课程须知</strong></div>
-      <span class="preview-badge">前端预览</span>
+      <button class="preview-badge logout-button" type="button" data-logout hidden>退出登录</button>
     </header>
 
     <div class="conversation" data-chat-log aria-live="polite">
       <div class="welcome-block">
         <div class="assistant-avatar">研</div>
-        <h2>实证方法与论文写作 AI 助教</h2>
+        <h2>《实证方法与论文写作》课程助教</h2>
         <p data-welcome-copy>请选择左侧功能，或直接输入你的研究问题。</p>
         <div class="starter-grid">
           <button type="button" data-prompt>如何把兴趣转化为研究问题？</button>
@@ -75,4 +86,4 @@ title: Zhuang, Wenzi
   </section>
 </main>
 
-<script src="../../../assets/js/course-ai.js?v=20260908-2" defer></script>
+<script src="../../../assets/js/course-ai.js?v=20260908-3" defer></script>

@@ -1076,6 +1076,8 @@ body:has(.chat-workspace) {
 
 .feature-button {
   font-weight: 620;
+  padding-top: 0.435rem;
+  padding-bottom: 0.435rem;
 }
 
 .feature-button:hover,
@@ -1089,15 +1091,19 @@ body:has(.chat-workspace) {
 }
 
 .feature-subnav {
-  display: grid;
+  display: none;
   gap: 0.08rem;
   margin: 0.08rem 0 0.28rem 0.7rem;
   padding-left: 0.55rem;
   border-left: 1px solid #cad7d0;
 }
 
+.feature-group.open .feature-subnav {
+  display: grid;
+}
+
 .feature-subnav button {
-  padding: 0.42rem 0.58rem;
+  padding: 0.315rem 0.58rem;
   color: var(--course-muted);
   font-size: 0.76rem;
 }

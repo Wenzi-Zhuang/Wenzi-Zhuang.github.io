@@ -2,19 +2,18 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-2">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-3">
 
 <main class="chat-workspace" data-course-ai data-course-name="会计学">
   <section class="login-gate" data-login-gate>
     <form class="login-card" data-login-form>
       <div class="assistant-avatar">会</div>
-      <h2>进入会计学 AI 课程</h2>
-      <p>首次在此浏览器使用时需要验证，之后将自动进入。</p>
-      <label>姓名<input name="name" autocomplete="name" required maxlength="100"></label>
-      <label>学号<input name="student_no" autocomplete="username" required maxlength="64"></label>
-      <label>课程密码<input name="course_password" type="password" autocomplete="current-password" required></label>
+      <h2>登录课程助教</h2>
+      <p>请输入管理员账号和密码。</p>
+      <label>账号<input name="username" autocomplete="username" required></label>
+      <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
       <p class="form-error" data-login-error role="alert"></p>
-      <button type="submit">验证并进入</button>
+      <button type="submit">登录</button>
     </form>
   </section>
   <aside class="chat-sidebar">
@@ -27,7 +26,7 @@ title: Zhuang, Wenzi
     <nav class="feature-nav" aria-label="课程功能">
       <p class="sidebar-label">功能</p>
       <div class="feature-group">
-        <button class="feature-button active" type="button" data-feature="课程须知" data-intro="请选择需要了解的课程内容。">课程须知</button>
+        <button class="feature-button active" type="button" data-feature="课程须知" data-intro="请选择需要了解的课程内容。" aria-expanded="false">课程须知</button>
         <div class="feature-subnav">
           <button type="button" data-feature="教学大纲">教学大纲</button>
           <button type="button" data-feature="考核要求">考核要求</button>
@@ -53,7 +52,7 @@ title: Zhuang, Wenzi
   <section class="chat-main">
     <header class="chat-header">
       <div><span class="mobile-course-name">会计学</span><strong data-chat-mode>课程须知</strong></div>
-      <button class="preview-badge logout-button" type="button" data-logout hidden>退出设备</button>
+      <button class="preview-badge logout-button" type="button" data-logout hidden>退出登录</button>
     </header>
 
     <div class="conversation" data-chat-log aria-live="polite">
@@ -82,4 +81,4 @@ title: Zhuang, Wenzi
 </main>
 
 <script src="../../../assets/js/course-ai-config.js"></script>
-<script src="../../../assets/js/course-ai.js?v=20260908-2" defer></script>
+<script src="../../../assets/js/course-ai.js?v=20260908-3" defer></script>

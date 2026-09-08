@@ -14,9 +14,9 @@
     var loginError = app.querySelector('[data-login-error]');
     var logout = app.querySelector('[data-logout]');
     var connection = app.querySelector('[data-connection-state]');
-    var tokenKey = 'course-ai-device-token';
+    var tokenKey = 'course-ai-preview-login:' + (app.dataset.courseName || 'course');
     var token = '';
-    try { token = localStorage.getItem(tokenKey) || ''; } catch (error) {}
+    try { token = sessionStorage.getItem(tokenKey) || ''; } catch (error) {}
 
     function api(path, options) {
       options = options || {};
@@ -37,49 +37,32 @@
     function setAuthenticated(ok) {
       gate.hidden = ok;
       logout.hidden = !ok;
-      connection.textContent = ok ? 'NAS 课程资料库已连接' : '需要设备验证';
+      if (connection) connection.textContent = ok ? '课程助教已登录' : '需要登录';
       app.classList.toggle('is-authenticated', ok);
     }
 
     async function checkSession() {
-      if (!token || apiBase.indexOf('YOUR_') !== -1) return setAuthenticated(false);
-      try {
-        var response = await api('/api/auth/me');
-        if (!response.ok) throw new Error();
-        setAuthenticated(true);
-      } catch (error) {
-        token = '';
-        try { localStorage.removeItem(tokenKey); } catch (storageError) {}
-        setAuthenticated(false);
-      }
+      setAuthenticated(token === 'admin');
     }
 
-    loginForm.addEventListener('submit', async function (event) {
+    loginForm.addEventListener('submit', function (event) {
       event.preventDefault();
       loginError.textContent = '';
       var submit = loginForm.querySelector('[type="submit"]');
       submit.disabled = true;
-      if (apiBase.indexOf('YOUR_') !== -1) {
-        loginError.textContent = '课程服务器域名尚未配置。'; submit.disabled = false; return;
-      }
       var data = Object.fromEntries(new FormData(loginForm).entries());
-      data.platform = navigator.platform || '';
-      data.language = navigator.language || '';
-      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-      try {
-        var response = await api('/api/auth/register-device', {method: 'POST', body: JSON.stringify(data)});
-        var result = await response.json();
-        if (!response.ok) throw new Error(result.detail || '验证失败');
-        token = result.device_token;
-        localStorage.setItem(tokenKey, token);
-        loginForm.reset(); setAuthenticated(true); input.focus();
-      } catch (error) { loginError.textContent = error.message || '无法连接课程服务器'; }
-      finally { submit.disabled = false; }
+      if (data.username !== 'admin' || data.password !== 'admin') {
+        loginError.textContent = '账号或密码错误。'; submit.disabled = false; return;
+      }
+      token = 'admin';
+      try { sessionStorage.setItem(tokenKey, token); } catch (error) {}
+      loginForm.reset(); setAuthenticated(true); input.focus(); submit.disabled = false;
     });
 
-    logout.addEventListener('click', async function () {
-      try { await api('/api/auth/logout', {method: 'POST'}); } catch (error) {}
-      token = ''; localStorage.removeItem(tokenKey); setAuthenticated(false);
+    logout.addEventListener('click', function () {
+      token = '';
+      try { sessionStorage.removeItem(tokenKey); } catch (error) {}
+      setAuthenticated(false);
     });
 
     app.querySelectorAll('[data-prompt]').forEach(function (button) {
@@ -87,6 +70,21 @@
     });
     app.querySelectorAll('[data-feature]').forEach(function (button) {
       button.addEventListener('click', function () {
+        if (button.classList.contains('feature-button')) {
+          var selectedGroup = button.closest('.feature-group');
+          if (selectedGroup) {
+            var shouldOpen = !selectedGroup.classList.contains('open');
+            app.querySelectorAll('.feature-group').forEach(function (group) {
+              group.classList.remove('open');
+              var trigger = group.querySelector('.feature-button');
+              if (trigger) trigger.setAttribute('aria-expanded', 'false');
+            });
+            if (shouldOpen) {
+              selectedGroup.classList.add('open');
+              button.setAttribute('aria-expanded', 'true');
+            }
+          }
+        }
         app.querySelectorAll('[data-feature]').forEach(function (item) { item.classList.remove('active'); });
         button.classList.add('active'); mode.textContent = button.dataset.feature;
         welcomeCopy.textContent = button.dataset.intro || '已切换至“' + button.dataset.feature + '”。你可以直接输入问题开始互动。';
