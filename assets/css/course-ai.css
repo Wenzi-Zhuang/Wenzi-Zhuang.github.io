@@ -312,7 +312,6 @@ body {
 .card-action {
   margin-top: 1.3rem;
   color: var(--course-accent);
-  font-size: 1rem;
   font-weight: 700;
 }
 
