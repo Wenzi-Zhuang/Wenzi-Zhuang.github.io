@@ -4,31 +4,33 @@ import time
 from collections import defaultdict
 from datetime import datetime, timezone
 
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .auth import current_student, issue_token, token_hash, verify_course_password
+from .auth import current_student, issue_token, token_hash, verify_password
 from .config import get_settings
 from .database import Base, engine, get_db
 from .models import Device, Student
 from .services.deepseek import stream_answer
 from .services.rag import retrieve
+from .services.thesis import inspect_thesis
 
 cfg = get_settings()
 app = FastAPI(title=f"{cfg.course_name} AI API", docs_url=None if cfg.app_env == "production" else "/docs")
 app.add_middleware(CORSMiddleware, allow_origins=[cfg.frontend_origin], allow_credentials=False,
                    allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"])
 student_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
+thesis_semaphore = asyncio.Semaphore(3)
 
 
 class RegisterBody(BaseModel):
     name: str = Field(min_length=1, max_length=100)
     student_no: str = Field(min_length=1, max_length=64)
-    course_password: str
+    password: str
     platform: str | None = None
     language: str | None = None
     timezone: str | None = None
@@ -59,11 +61,10 @@ async def health(db: AsyncSession = Depends(get_db)):
 
 @app.post("/api/auth/register-device")
 async def register(body: RegisterBody, request: Request, db: AsyncSession = Depends(get_db)):
-    if not verify_course_password(body.course_password):
-        raise HTTPException(403, "课程密码错误")
     student = (await db.execute(select(Student).where(Student.student_no == body.student_no.strip()))).scalar_one_or_none()
-    if not student or student.status != "active" or student.name.strip() != body.name.strip():
-        raise HTTPException(403, "姓名或学号不匹配")
+    if (not student or student.status != "active" or student.name.strip() != body.name.strip()
+            or not verify_password(student.password_hash, body.password)):
+        raise HTTPException(403, "姓名、学号或密码错误")
     raw, digest, expires = issue_token()
     ip = request.client.host if request.client else None
     db.add(Device(student_id=student.student_id, token_hash=digest, expires_at=expires,
@@ -119,3 +120,27 @@ async def chat(body: ChatBody, student: Student = Depends(current_student), db: 
             raise HTTPException(503, "回答服务暂时不可用，请稍后重试") from exc
     return {"answer": answer, "retrieval_ms": round(retrieval_ms),
             "sources": [{"title": item.title, "locator": item.locator} for item in evidence]}
+
+
+@app.post("/api/thesis/check")
+async def thesis_check(
+    file: UploadFile = File(...),
+    requirements: str = Form(default=""),
+):
+    if thesis_semaphore.locked():
+        raise HTTPException(429, "当前检查人数较多，请稍后重试")
+    suffix = "." + file.filename.rsplit(".", 1)[-1].lower() if file.filename and "." in file.filename else ""
+    if suffix not in {".docx", ".pdf"}:
+        raise HTTPException(415, "只接受 DOCX 或 PDF 论文")
+    content = await file.read(cfg.max_upload_mb * 1024 * 1024 + 1)
+    if len(content) > cfg.max_upload_mb * 1024 * 1024:
+        raise HTTPException(413, f"文件不能超过 {cfg.max_upload_mb}MB")
+    if suffix == ".pdf" and not content.startswith(b"%PDF-"):
+        raise HTTPException(400, "文件内容不是有效 PDF")
+    if suffix == ".docx" and not content.startswith(b"PK"):
+        raise HTTPException(400, "文件内容不是有效 DOCX")
+    try:
+        async with thesis_semaphore:
+            return await inspect_thesis(content, suffix, requirements)
+    except ValueError as exc:
+        raise HTTPException(400, str(exc)) from exc

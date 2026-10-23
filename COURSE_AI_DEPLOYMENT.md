@@ -10,14 +10,13 @@
 cp .env.example .env
 ```
 
-填写 `.env`。生成课程密码哈希与令牌密钥：
+填写 `.env`。生成设备令牌密钥：
 
 ```bash
-docker run --rm python:3.12-slim sh -c "pip -q install argon2-cffi && python -c 'from argon2 import PasswordHasher; print(PasswordHasher().hash(input()))'"
 openssl rand -hex 32
 ```
 
-将两段输出分别写入 `COURSE_ACCESS_PASSWORD_HASH` 和 `DEVICE_TOKEN_SECRET`；将 DeepSeek 密钥只写入 NAS 上的 `.env`。
+将输出写入 `DEVICE_TOKEN_SECRET`；将 DeepSeek 密钥只写入 NAS 上的 `.env`。
 
 ## 2. 启动与初始化
 
@@ -28,7 +27,7 @@ docker compose exec backend python scripts/ingest_course_library.py
 curl http://127.0.0.1:8000/health
 ```
 
-学生 CSV 表头必须是 `student_no,name`。索引脚本只扫描明确允许公开教学的目录，不扫描教师批改、考试答案、学生提交与归档目录。首次导入前仍应检查允许目录里没有仅限教师的文件。
+学生 CSV 表头必须是 `student_no,name,password`，导入后密码只以 Argon2 哈希保存。毕业论文指导页面按当前需求无需登录，但仍只允许来自个人主页域名的浏览器调用。索引脚本只扫描明确允许公开教学的目录，不扫描教师批改、考试答案、学生提交与归档目录。首次导入前仍应检查允许目录里没有仅限教师的文件。
 
 ## 3. IPv6、域名与 DSM 反向代理
 

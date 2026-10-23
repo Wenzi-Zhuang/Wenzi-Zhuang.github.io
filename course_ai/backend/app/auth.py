@@ -20,10 +20,10 @@ def token_hash(token: str) -> str:
     return hmac.new(get_settings().device_token_secret.encode(), token.encode(), hashlib.sha256).hexdigest()
 
 
-def verify_course_password(password: str) -> bool:
+def verify_password(password_hash: str, password: str) -> bool:
     try:
-        return ph.verify(get_settings().course_access_password_hash, password)
-    except VerifyMismatchError:
+        return ph.verify(password_hash, password)
+    except (VerifyMismatchError, TypeError):
         return False
 
 

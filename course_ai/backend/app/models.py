@@ -12,6 +12,7 @@ class Student(Base):
     student_id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     student_no: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(100))
+    password_hash: Mapped[str] = mapped_column(Text)
     status: Mapped[str] = mapped_column(String(20), default="active")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

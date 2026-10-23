@@ -14,10 +14,14 @@ title: Zhuang, Wenzi
 
   <header class="page-heading">
     <p class="eyebrow">Teaching</p>
-    <h1>课程列表</h1>
+    <h1>教学</h1>
   </header>
 
-  <section class="course-catalog" aria-label="课程列表">
+  <section class="course-catalog" aria-label="教学项目">
+    <a class="catalog-card featured" href="/teaching/Thesis%20Guidance/readme.html">
+      <div><span class="card-tag">本科 · 毕业论文</span><h2>毕业论文指导</h2><p>论文格式检查、修改建议与写作问答</p></div>
+      <span class="card-action">论文AI互动平台 →</span>
+    </a>
     <a class="catalog-card featured" href="/teaching/Intro%20to%20Accounting%20Research%20101/Spring%202025/readme.html">
       <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
       <span class="card-action">课程AI互动平台 →</span>

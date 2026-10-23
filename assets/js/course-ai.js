@@ -14,9 +14,9 @@
     var loginError = app.querySelector('[data-login-error]');
     var logout = app.querySelector('[data-logout]');
     var connection = app.querySelector('[data-connection-state]');
-    var tokenKey = 'course-ai-preview-login:' + (app.dataset.courseName || 'course');
+    var tokenKey = 'course-ai-device-token';
     var token = '';
-    try { token = sessionStorage.getItem(tokenKey) || ''; } catch (error) {}
+    try { token = localStorage.getItem(tokenKey) || ''; } catch (error) {}
 
     function api(path, options) {
       options = options || {};
@@ -37,31 +37,49 @@
     function setAuthenticated(ok) {
       gate.hidden = ok;
       logout.hidden = !ok;
-      if (connection) connection.textContent = ok ? '课程助教已登录' : '需要登录';
+      if (connection) connection.textContent = ok ? 'NAS 课程资料库已连接' : '需要设备验证';
       app.classList.toggle('is-authenticated', ok);
     }
 
     async function checkSession() {
-      setAuthenticated(token === 'admin');
+      if (!token || apiBase.indexOf('YOUR_') !== -1) return setAuthenticated(false);
+      try {
+        var response = await api('/api/auth/me');
+        if (!response.ok) throw new Error();
+        setAuthenticated(true);
+      } catch (error) {
+        token = '';
+        try { localStorage.removeItem(tokenKey); } catch (storageError) {}
+        setAuthenticated(false);
+      }
     }
 
-    loginForm.addEventListener('submit', function (event) {
+    loginForm.addEventListener('submit', async function (event) {
       event.preventDefault();
       loginError.textContent = '';
       var submit = loginForm.querySelector('[type="submit"]');
       submit.disabled = true;
       var data = Object.fromEntries(new FormData(loginForm).entries());
-      if (data.username !== 'admin' || data.password !== 'admin') {
-        loginError.textContent = '账号或密码错误。'; submit.disabled = false; return;
+      if (apiBase.indexOf('YOUR_') !== -1) {
+        loginError.textContent = '课程服务器域名尚未配置。'; submit.disabled = false; return;
       }
-      token = 'admin';
-      try { sessionStorage.setItem(tokenKey, token); } catch (error) {}
-      loginForm.reset(); setAuthenticated(true); input.focus(); submit.disabled = false;
+      data.platform = navigator.platform || '';
+      data.language = navigator.language || '';
+      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      try {
+        var response = await api('/api/auth/register-device', {method: 'POST', body: JSON.stringify(data)});
+        var result = await response.json();
+        if (!response.ok) throw new Error(result.detail || '验证失败');
+        token = result.device_token; localStorage.setItem(tokenKey, token);
+        loginForm.reset(); setAuthenticated(true); input.focus();
+      } catch (error) { loginError.textContent = error.message || '无法连接课程服务器'; }
+      finally { submit.disabled = false; }
     });
 
-    logout.addEventListener('click', function () {
+    logout.addEventListener('click', async function () {
+      try { await api('/api/auth/logout', {method: 'POST'}); } catch (error) {}
       token = '';
-      try { sessionStorage.removeItem(tokenKey); } catch (error) {}
+      try { localStorage.removeItem(tokenKey); } catch (error) {}
       setAuthenticated(false);
     });
 

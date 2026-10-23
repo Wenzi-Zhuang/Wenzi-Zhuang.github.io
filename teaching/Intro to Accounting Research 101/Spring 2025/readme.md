@@ -9,9 +9,10 @@ title: Zhuang, Wenzi
     <form class="login-card" data-login-form>
       <div class="assistant-avatar">研</div>
       <h2>登录课程助教</h2>
-      <p>请输入管理员账号和密码。</p>
-      <label>账号<input name="username" autocomplete="username" required></label>
-      <label>密码<input name="password" type="password" autocomplete="current-password" required></label>
+      <p>首次在此浏览器使用时需要验证。</p>
+      <label>姓名<input name="name" autocomplete="name" required></label>
+      <label>学号<input name="student_no" autocomplete="username" required></label>
+      <label>个人密码<input name="password" type="password" autocomplete="current-password" required></label>
       <p class="form-error" data-login-error role="alert"></p>
       <button type="submit">登录</button>
     </form>

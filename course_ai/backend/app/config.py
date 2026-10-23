@@ -13,12 +13,12 @@ class Settings(BaseSettings):
     deepseek_api_key: str
     deepseek_base_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-chat"
-    course_access_password_hash: str
     device_token_secret: str
     frontend_origin: str
     public_api_base: str
     device_token_days: int = 180
     max_upload_mb: int = 50
+    thesis_root: Path = Path("/volume1/courses/thesis_guidance")
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
