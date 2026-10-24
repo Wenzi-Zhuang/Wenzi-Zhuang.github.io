@@ -270,7 +270,7 @@ body {
 
 .catalog-card {
   display: flex;
-  min-height: 185px;
+  min-height: 190px;
   padding: 1.55rem;
   flex-direction: column;
   justify-content: space-between;
