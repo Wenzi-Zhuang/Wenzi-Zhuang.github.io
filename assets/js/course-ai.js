@@ -19,6 +19,7 @@
     var messages = [];
     var attachments = [];
     var user = null;
+    var activeRequest = null;
 
     var gate = document.createElement('div');
     gate.className = 'auth-gate';
@@ -112,6 +113,40 @@
       log.scrollTop = log.scrollHeight;
       return item;
     }
+    function appendProgress() {
+      var item = document.createElement('div');
+      item.className = 'message message-progress';
+      item.setAttribute('role', 'status');
+      var pulse = document.createElement('span');
+      pulse.className = 'progress-pulse';
+      pulse.setAttribute('aria-hidden', 'true');
+      var label = document.createElement('span');
+      label.className = 'progress-label';
+      label.textContent = '搜索中';
+      var timer = document.createElement('span');
+      timer.className = 'progress-timer';
+      timer.setAttribute('aria-hidden', 'true');
+      timer.textContent = '0.0 秒';
+      item.append(pulse, label, timer);
+      log.appendChild(item);
+      log.scrollTop = log.scrollHeight;
+      var started = performance.now();
+      var interval = window.setInterval(function () {
+        timer.textContent = ((performance.now() - started) / 1000).toFixed(1) + ' 秒';
+      }, 100);
+      return {
+        thinking: function () { label.textContent = '思考中'; },
+        stop: function () { window.clearInterval(interval); item.remove(); }
+      };
+    }
+    function cancelPending() {
+      if (!activeRequest) return;
+      activeRequest.cancelled = true;
+      activeRequest.controller.abort();
+      activeRequest.progress.stop();
+      activeRequest = null;
+      form.dataset.busy = 'false';
+    }
     function clearLog() {
       log.querySelectorAll('.message, .source-list').forEach(function (item) { item.remove(); });
       welcome.hidden = false;
@@ -123,6 +158,7 @@
       welcome.hidden = messages.length > 0;
     }
     function resetChat() {
+      cancelPending();
       currentThread = '';
       messages = [];
       attachments = [];
@@ -133,6 +169,7 @@
       input.focus();
     }
     async function openThread(id) {
+      cancelPending();
       try {
         var item = await requestJSON('/api/assistants/' + assistantId + '/threads/' + id, {headers: authHeaders()});
         currentThread = id;
@@ -264,44 +301,66 @@
       var outgoing = messages.slice(-10).map(function (item) { return {role: item.role, content: item.content}; });
       outgoing.push({role: 'user', content: question + (extra ? '\n\n以下是我提交的文档摘录，请结合回答：\n' + extra : '')});
       while (outgoing.reduce(function (n, item) { return n + item.content.length; }, 0) > 15500 && outgoing.length > 1) outgoing.shift();
+      welcome.hidden = true;
+      appendMessage(visibleQuestion, 'user');
+      var progress = appendProgress();
+      var controller = new AbortController();
+      var request = {cancelled: false, controller: controller, progress: progress};
+      activeRequest = request;
+      input.value = '';
       var answer = null;
       try {
         var response = await fetch(apiBase + '/api/assistants/' + assistantId + '/chat/stream',
-          jsonOptions('POST', {messages: outgoing, mode: mode.textContent}, true));
+          Object.assign(jsonOptions('POST', {messages: outgoing, mode: mode.textContent}, true), {signal: controller.signal}));
+        if (request.cancelled) return;
         if (!response.ok) {
           var failure = await response.json().catch(function () { return {}; });
           throw new Error(failure.detail || '暂时无法回答，请稍后再试');
         }
-        welcome.hidden = true;
-        appendMessage(visibleQuestion, 'user');
-        answer = appendMessage('', 'assistant');
+        if (!response.body) throw new Error('暂时无法接收回答，请稍后再试');
         var reader = response.body.getReader(), decoder = new TextDecoder(), buffer = '', sources = [];
+        var answerText = '';
         while (true) {
           var chunk = await reader.read(); if (chunk.done) break;
+          if (request.cancelled) return;
           buffer += decoder.decode(chunk.value, {stream: true});
           var packets = buffer.split('\n\n'); buffer = packets.pop();
           packets.forEach(function (packet) {
             var eventName = (packet.match(/^event: (.+)$/m) || [])[1];
             var raw = (packet.match(/^data: (.+)$/m) || [])[1]; if (!raw) return;
             var data = JSON.parse(raw);
-            if (eventName === 'token') answer.textContent += data.text;
-            if (eventName === 'meta') sources = data.sources || [];
+            if (eventName === 'token') {
+              answerText += data.text || '';
+              if (!answer && answerText.trim()) { progress.stop(); answer = appendMessage(answerText, 'assistant'); }
+              else if (answer) answer.textContent = answerText;
+            }
+            if (eventName === 'meta') { sources = data.sources || []; progress.thinking(); }
             if (eventName === 'error') throw new Error(data.message);
             log.scrollTop = log.scrollHeight;
           });
         }
-        if (!answer.textContent.trim()) throw new Error('AI 未返回回答，请稍后重试');
+        if (!answer || !answer.textContent.trim()) throw new Error('AI 未返回回答，请稍后重试');
         messages.push({role: 'user', content: visibleQuestion}, {role: 'assistant', content: answer.textContent});
-        input.value = ''; attachments = []; fileList.innerHTML = '';
+        attachments = []; fileList.innerHTML = '';
         if (sources.length) {
           var sourceBox = document.createElement('div'); sourceBox.className = 'source-list';
           sourceBox.textContent = 'NAS 资料来源：' + sources.map(function (item) { return item.title; }).join('；'); log.appendChild(sourceBox);
         }
         try { await saveThread(); } catch (saveError) { errorBox.textContent = '回答已生成，但历史记录保存失败：' + saveError.message; }
       } catch (error) {
-        if (answer) answer.textContent = error.message || '暂时无法回答';
-        else errorBox.textContent = error.message || '暂时无法回答';
-      } finally { form.dataset.busy = 'false'; input.focus(); }
+        if (request.cancelled) return;
+        progress.stop();
+        if (answer) answer.textContent = '回答中断：' + (error.message || '暂时无法回答');
+        else appendMessage(error.message || '暂时无法回答', 'assistant');
+        if (!input.value.trim()) input.value = question;
+      } finally {
+        progress.stop();
+        if (activeRequest === request) {
+          activeRequest = null;
+          form.dataset.busy = 'false';
+          input.focus();
+        }
+      }
     });
     input.addEventListener('keydown', function (event) {
       if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); form.requestSubmit(); }

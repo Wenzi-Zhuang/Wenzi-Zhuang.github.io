@@ -1574,6 +1574,12 @@ body:has(.thesis-workspace) { background: #f4f7f5; }
 .conversation > .message { max-width: min(980px, 100%); font-size: .96rem; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
 .conversation > .message-user { max-width: min(800px, 92%); margin-left: auto; margin-right: 0; }
 .conversation > .message-assistant { margin-left: 0; margin-right: auto; }
+.conversation > .message-progress { display: flex; align-items: center; gap: .6rem; width: max-content; max-width: 100%; margin-left: 0; padding: .55rem .1rem; color: #62736a; font-size: .82rem; background: transparent; border: 0; }
+.progress-pulse { width: 8px; height: 8px; flex: 0 0 auto; background: var(--course-accent); border-radius: 50%; animation: progress-pulse 1.2s ease-in-out infinite; }
+.progress-label { font-weight: 650; }
+.progress-timer { margin-left: .15rem; color: #8d9a92; font-size: .76rem; font-variant-numeric: tabular-nums; }
+@keyframes progress-pulse { 50% { opacity: .35; transform: scale(.72); } }
+@media (prefers-reduced-motion: reduce) { .progress-pulse { animation: none; } }
 .source-list { max-width: 980px; }
 .chat-composer-wrap { width: min(1040px, calc(100% - 40px)); padding-bottom: 1.1rem; }
 .chat-composer textarea { min-height: 66px; max-height: 220px; resize: vertical; line-height: 1.6; }

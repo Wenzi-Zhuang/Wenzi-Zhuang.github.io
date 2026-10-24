@@ -2,7 +2,7 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20261025-4">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20261025-live-status">
 
 <main class="chat-workspace" data-course-ai data-course-name="实证方法与论文写作" data-assistant-id="empirical_methods">
   <aside class="chat-sidebar">
@@ -76,4 +76,4 @@ title: Zhuang, Wenzi
 </main>
 
 <script src="../../../assets/js/course-ai-config.js?v=20261025-4"></script>
-<script src="../../../assets/js/course-ai.js?v=20261025-4" defer></script>
+<script src="../../../assets/js/course-ai.js?v=20261025-live-status" defer></script>

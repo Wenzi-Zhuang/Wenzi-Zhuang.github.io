@@ -2,7 +2,7 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20261025-4">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20261025-live-status">
 
 <main class="chat-workspace" data-course-ai data-course-name="会计学" data-assistant-id="financial_accounting">
   <aside class="chat-sidebar">
@@ -70,4 +70,4 @@ title: Zhuang, Wenzi
 </main>
 
 <script src="../../../assets/js/course-ai-config.js?v=20261025-4"></script>
-<script src="../../../assets/js/course-ai.js?v=20261025-4" defer></script>
+<script src="../../../assets/js/course-ai.js?v=20261025-live-status" defer></script>
