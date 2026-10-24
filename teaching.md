@@ -2,7 +2,7 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="/assets/css/course-ai.css">
+<link rel="stylesheet" href="/assets/css/course-ai.css?v=20261025-thesis-group">
 
 <main class="site-shell">
   <header class="site-header">
