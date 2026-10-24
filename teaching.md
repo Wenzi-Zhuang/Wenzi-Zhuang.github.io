@@ -2,7 +2,7 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="/assets/css/course-ai.css?v=20261025-thesis-group">
+<link rel="stylesheet" href="/assets/css/course-ai.css?v=20261025-card-footer">
 
 <main class="site-shell">
   <header class="site-header">
@@ -20,11 +20,11 @@ title: Zhuang, Wenzi
   <section class="course-catalog" aria-label="教学项目">
     <a class="catalog-card featured emphasis" href="/teaching/Financial%20Accounting%20101/Spring%202025/readme.html">
       <div><span class="card-tag">本科 · 2026–2027</span><h2>会计学</h2></div>
-      <span class="card-action" aria-hidden="true">→</span>
+      <div class="card-footer"><span class="card-platform">互动教学平台</span><span class="card-action" aria-hidden="true">→</span></div>
     </a>
     <a class="catalog-card featured emphasis" href="/teaching/Intro%20to%20Accounting%20Research%20101/Spring%202025/readme.html">
       <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
-      <span class="card-action" aria-hidden="true">→</span>
+      <div class="card-footer"><span class="card-platform">互动教学平台</span><span class="card-action" aria-hidden="true">→</span></div>
     </a>
     <details class="course-archive">
       <summary>更多课程</summary>
@@ -37,14 +37,13 @@ title: Zhuang, Wenzi
   </section>
 
   <section class="course-catalog thesis-catalog" aria-label="毕业论文指导">
-    <p class="catalog-group-label">论文指导</p>
     <a class="catalog-card featured emphasis thesis-card" href="/teaching/Thesis%20Guidance/readme.html">
       <div><span class="card-tag">本科 / 专硕 · 毕业论文指导</span><h2>案例论文</h2></div>
-      <span class="card-action" aria-hidden="true">→</span>
+      <div class="card-footer"><span class="card-platform">互动平台</span><span class="card-action" aria-hidden="true">→</span></div>
     </a>
     <a class="catalog-card featured emphasis thesis-card" href="/teaching/Empirical%20Thesis%20Guidance/readme.html">
       <div><span class="card-tag">论文指导</span><h2>实证论文</h2></div>
-      <span class="card-action" aria-hidden="true">→</span>
+      <div class="card-footer"><span class="card-platform">互动平台</span><span class="card-action" aria-hidden="true">→</span></div>
     </a>
   </section>
 
