@@ -2,7 +2,7 @@
 title: Zhuang, Wenzi
 ---
 
-<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-3">
+<link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20261025-4">
 
 <main class="chat-workspace" data-course-ai data-course-name="实证方法与论文写作" data-assistant-id="empirical_methods">
   <aside class="chat-sidebar">
@@ -36,9 +36,8 @@ title: Zhuang, Wenzi
     </nav>
 
     <section class="chat-history" aria-label="对话记录">
-      <p class="sidebar-label">对话记录</p>
-      <button class="history-item active" type="button">欢迎使用课程助教</button>
-      <p class="history-empty">更多对话将在后端接入后保存</p>
+      <p class="sidebar-label">历史对话</p>
+      <div data-thread-list></div>
     </section>
 
     <div class="sidebar-footer"><span class="connection-dot"></span><span data-connection-state>正在连接 DeepSeek / NAS</span></div>
@@ -47,7 +46,7 @@ title: Zhuang, Wenzi
   <section class="chat-main">
     <header class="chat-header">
       <div><span class="mobile-course-name">实证方法与论文写作</span><strong data-chat-mode>课程须知</strong></div>
-      <span class="preview-badge">无需登录</span>
+      <span class="user-badge" data-user-name></span>
     </header>
 
     <div class="conversation" data-chat-log aria-live="polite">
@@ -66,14 +65,15 @@ title: Zhuang, Wenzi
     <div class="chat-composer-wrap">
       <ul class="file-list composer-files" data-file-list></ul>
       <form class="chat-composer" data-chat-form>
-        <label class="attach-button" title="选择资料">＋<span class="sr-only">选择资料</span><input type="file" multiple data-file-input accept=".pdf,.doc,.docx,.txt,.md,.png,.jpg,.jpeg,.csv,.xlsx"></label>
+        <label class="attach-button" title="选择文档">＋<span class="sr-only">选择文档</span><input type="file" multiple data-file-input accept=".pdf,.docx,.txt,.md,.csv"></label>
         <textarea data-chat-input aria-label="输入课程问题" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
         <button class="round-send" type="submit" aria-label="发送">↑</button>
       </form>
-      <p class="composer-note">消息将发送给本课程专属 AI；NAS 资料仅用于生成回答，不会显示给其他访客。</p>
+      <p class="form-error" data-chat-error role="alert"></p>
+      <p class="composer-note">每平台每小时最多 50 问、每天 150 问；每天最多 10 个文档，单个 500 KB、累计 1500 KB。文档摘录会随问题发送给 DeepSeek，请先移除敏感信息。</p>
     </div>
   </section>
 </main>
 
-<script src="../../../assets/js/course-ai-config.js?v=20261025-1"></script>
-<script src="../../../assets/js/course-ai.js?v=20261024-1" defer></script>
+<script src="../../../assets/js/course-ai-config.js?v=20261025-4"></script>
+<script src="../../../assets/js/course-ai.js?v=20261025-4" defer></script>

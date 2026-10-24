@@ -3,8 +3,9 @@ import json
 import secrets
 import time
 from collections import defaultdict, deque
+from contextlib import asynccontextmanager
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
@@ -13,23 +14,43 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .config import get_settings
 from .database import Base, engine, get_db
+from .auth import current_student
+from .auth_routes import allowed, router as auth_router
+from .thread_routes import router as thread_router
+from .models import Student
 from .services.deepseek import stream_messages
-from .services.thesis import inspect_thesis
 from .services.assistant_context import ASSISTANTS, build_system_messages, ensure_library_structure, load_assistant_context
 from .services.runtime_config import load_deepseek_config, save_deepseek_config
+from .services.student_files import ensure_rosters
+from .services.upload_text import extract_upload_text
+from .services.usage import MAX_FILE_BYTES, consume_quota
 
 cfg = get_settings()
-app = FastAPI(title=f"{cfg.course_name} AI API", docs_url=None if cfg.app_env == "production" else "/docs")
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    ensure_library_structure()
+    ensure_rosters()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+
+
+app = FastAPI(title=f"{cfg.course_name} AI API", docs_url=None if cfg.app_env == "production" else "/docs",
+              lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=[cfg.frontend_origin], allow_credentials=False,
-                   allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"])
-thesis_semaphore = asyncio.Semaphore(3)
+                   allow_methods=["GET", "POST", "PUT"], allow_headers=["Authorization", "Content-Type"])
+app.include_router(auth_router)
+app.include_router(thread_router)
 assistant_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 assistant_semaphore = asyncio.Semaphore(4)
 # The public, login-free assistant needs a server-side cost ceiling.  This
 # process runs as a single Uvicorn worker in the NAS deployment.
 assistant_request_times: deque[float] = deque()
-thesis_request_times: deque[float] = deque()
 setup_request_times: deque[float] = deque()
+upload_request_times: deque[float] = deque()
+student_upload_attempts: dict[str, deque[float]] = defaultdict(deque)
 
 
 def check_hourly_limit(request_times: deque[float], limit: int) -> None:
@@ -49,14 +70,6 @@ class ThesisMessage(BaseModel):
 class AssistantChatBody(BaseModel):
     messages: list[ThesisMessage] = Field(min_length=1, max_length=12)
     mode: str = Field(default="自由问答", max_length=100)
-    temporary_requirements: str = Field(default="", max_length=6000)
-
-
-@app.on_event("startup")
-async def startup():
-    ensure_library_structure()
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 
 @app.get("/health")
@@ -96,21 +109,21 @@ async def deepseek_setup_save(
 
 
 @app.post("/api/assistants/{assistant_id}/chat/stream")
-async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody, request: Request):
+async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody,
+                                student: Student = Depends(current_student)):
     if assistant_id not in ASSISTANTS:
         raise HTTPException(404, "AI 助手不存在")
-    if sum(len(item.content) for item in body.messages) + len(body.temporary_requirements) > 16000:
+    allowed(assistant_id, student.student_no)
+    if sum(len(item.content) for item in body.messages) > 16000:
         raise HTTPException(413, "本次对话内容过长，请开始新对话或精简要求")
-    client_ip = request.client.host if request.client else "unknown"
-    lock = assistant_locks[f"{client_ip}:{assistant_id}"]
+    lock = assistant_locks[f"{student.student_no}:{assistant_id}"]
     if lock.locked() or assistant_semaphore.locked():
         raise HTTPException(429, "已有回答正在生成，请稍后重试")
-    check_hourly_limit(assistant_request_times, 30)
+    check_hourly_limit(assistant_request_times, 300)
+    await consume_quota(student.student_no, assistant_id, "question")
     query = next((item.content for item in reversed(body.messages) if item.role == "user"), "")
     context = load_assistant_context(assistant_id, query)
     message_list = build_system_messages(context, body.mode)
-    if body.temporary_requirements.strip():
-        message_list.append({"role": "system", "content": f"用户本次临时提供的要求：\n{body.temporary_requirements.strip()}"})
     message_list.extend(item.model_dump() for item in body.messages)
 
     async def events():
@@ -125,28 +138,25 @@ async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody, requ
     return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
-@app.post("/api/thesis/check")
-async def thesis_check(
-    file: UploadFile = File(...),
-    requirements: str = Form(default=""),
-):
-    if thesis_semaphore.locked():
-        raise HTTPException(429, "当前检查人数较多，请稍后重试")
-    if len(requirements) > 6000:
-        raise HTTPException(413, "格式要求不能超过 6000 字")
-    suffix = "." + file.filename.rsplit(".", 1)[-1].lower() if file.filename and "." in file.filename else ""
-    if suffix not in {".docx", ".pdf"}:
-        raise HTTPException(415, "只接受 DOCX 或 PDF 论文")
-    content = await file.read(cfg.max_upload_mb * 1024 * 1024 + 1)
-    if len(content) > cfg.max_upload_mb * 1024 * 1024:
-        raise HTTPException(413, f"文件不能超过 {cfg.max_upload_mb}MB")
-    if suffix == ".pdf" and not content.startswith(b"%PDF-"):
-        raise HTTPException(400, "文件内容不是有效 PDF")
-    if suffix == ".docx" and not content.startswith(b"PK"):
-        raise HTTPException(400, "文件内容不是有效 DOCX")
-    check_hourly_limit(thesis_request_times, 10)
+@app.post("/api/assistants/{assistant_id}/files")
+async def assistant_file(assistant_id: str, file: UploadFile = File(...),
+                         student: Student = Depends(current_student)):
+    allowed(assistant_id, student.student_no)
+    check_hourly_limit(upload_request_times, 300)
+    attempts = student_upload_attempts[student.student_no]
+    now = time.monotonic()
+    while attempts and attempts[0] <= now - 3600:
+        attempts.popleft()
+    if len(attempts) >= 30:
+        raise HTTPException(429, "暂时无法处理：文档提交过于频繁，请稍后再试。")
+    attempts.append(now)
+    content = await file.read(MAX_FILE_BYTES + 1)
+    if len(content) > MAX_FILE_BYTES:
+        raise HTTPException(413, "文件过大，无法处理：单个文件不能超过 500 KB。")
     try:
-        async with thesis_semaphore:
-            return await inspect_thesis(content, suffix, requirements)
+        excerpt = extract_upload_text(content, file.filename or "")
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
+    await consume_quota(student.student_no, assistant_id, "file", len(content))
+    return {"filename": (file.filename or "文档")[:100], "text": excerpt,
+            "truncated": len(excerpt) >= 10000}

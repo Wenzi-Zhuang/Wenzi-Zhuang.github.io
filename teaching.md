@@ -26,14 +26,19 @@ title: Zhuang, Wenzi
       <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
       <span class="card-action" aria-hidden="true">→</span>
     </a>
-    <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021、2025</span><h2>财务会计</h2></div></article>
-    <article class="catalog-card"><div><span class="card-tag">学硕 · 2020、2022</span><h2>财务管理</h2></div></article>
-    <article class="catalog-card"><div><span class="card-tag">博士 · 2022</span><h2>会计审计理论</h2></div></article>
+    <details class="course-archive">
+      <summary>更多课程 <span>财务会计 · 财务管理 · 会计审计理论</span></summary>
+      <div class="course-catalog archive-catalog">
+        <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021、2025</span><h2>财务会计</h2></div></article>
+        <article class="catalog-card"><div><span class="card-tag">学硕 · 2020、2022</span><h2>财务管理</h2></div></article>
+        <article class="catalog-card"><div><span class="card-tag">博士 · 2022</span><h2>会计审计理论</h2></div></article>
+      </div>
+    </details>
   </section>
 
   <section class="course-catalog thesis-catalog" aria-label="毕业论文指导">
     <a class="catalog-card featured emphasis thesis-card" href="/teaching/Thesis%20Guidance/readme.html">
-      <div><span class="card-tag">本科 / 硕士 · 毕业论文指导</span><h2>案例论文</h2></div>
+      <div><span class="card-tag">本科 / 专硕 · 毕业论文指导</span><h2>案例论文</h2></div>
       <span class="card-action" aria-hidden="true">→</span>
     </a>
     <a class="catalog-card featured emphasis thesis-card" href="/teaching/Empirical%20Thesis%20Guidance/readme.html">

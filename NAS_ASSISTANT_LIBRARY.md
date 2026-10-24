@@ -14,19 +14,23 @@ courses/
 │   ├── 10_sources/                 # 原始知识资料
 │   ├── 20_knowledge_system/        # 整理后的知识库
 │   └── 40_skills/                  # 技能库
+│   └── access/                     # 私有名单、设备摘要、学生对话；不参与 AI 检索
 ├── academic_writing/               # 实证方法与论文写作（复用现有编号结构）
 │   ├── 00_system/
 │   ├── 10_sources/
 │   ├── 20_knowledge_system/
 │   └── 40_skills/
+│   └── access/
 ├── case_study/                     # 案例论文
 │   ├── knowledge/
 │   ├── skills/
 │   └── requirements/
+│   └── access/
 └── empirical_study/                # 实证论文
     ├── knowledge/
     ├── skills/
-    └── requirements/
+    ├── requirements/
+    └── access/
 ```
 
 ## 放置规则
@@ -38,6 +42,7 @@ courses/
 - 支持 `.md`、`.txt`、`.csv`、`.pdf`、`.docx`。
 - 文件名应具有可读性，因为回答引用来源时会显示文件名。
 - 不要放入其他学生论文、未公开答案、密码或 API Key。
+- 每门平台的 `access/roster.json` 是私有学生名单；教师可登录后台更新学号、姓名、班级。`access/students/<学号>/devices.json` 保存浏览器设备摘要，`threads/` 保存该生对话。不要在名单里写身份证后六位，也不要把 `access/` 作为知识库或共享文件夹。
 
 新增或修改资料后无需重建容器；下一次提问会读取最新文件。资料很多时再升级为预构建向量索引。
 

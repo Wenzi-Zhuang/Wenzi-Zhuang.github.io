@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Index, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .database import Base
@@ -48,4 +48,18 @@ class SourceChunk(Base):
     content_hash: Mapped[str] = mapped_column(String(64), index=True)
 
 Index("ix_chunks_student_active", SourceChunk.visibility, SourceChunk.status)
+
+
+class UsageEvent(Base):
+    __tablename__ = "usage_events"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    client_id: Mapped[str] = mapped_column(String(64), index=True)
+    assistant_id: Mapped[str] = mapped_column(String(64), index=True)
+    kind: Mapped[str] = mapped_column(String(16))
+    byte_count: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
+
+
+Index("ix_usage_quota", UsageEvent.client_id, UsageEvent.assistant_id, UsageEvent.kind, UsageEvent.created_at)
 
