@@ -23,6 +23,8 @@ services:
         condition: service_healthy
     volumes:
       - /volume1/courses/financial_accounting:/volume1/courses/financial_accounting
+      - /volume1/courses/ai_assistants:/library
+      - /volume1/docker/course_ai/config:/config
     ports:
       - "127.0.0.1:8000:8000"
 

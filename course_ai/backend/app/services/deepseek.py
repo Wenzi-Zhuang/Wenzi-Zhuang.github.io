@@ -4,8 +4,8 @@ from collections.abc import AsyncIterator
 
 import httpx
 
-from ..config import get_settings
 from .rag import Evidence
+from .runtime_config import load_deepseek_config
 
 SYSTEM_PROMPT = """你是会计学课程AI助教。优先依据提供的课程证据回答；不得编造课程来源。回答应教学化、准确、简洁，必要时依次说明概念、原理、确认、计量、分录、报表影响、案例和易错点。不要复述或猜测学生身份。证据不足时明确说明内容依据一般会计知识。"""
 
@@ -28,14 +28,14 @@ async def stream_answer(question: str, skill: str, evidence: list[Evidence], sys
 
 
 async def stream_messages(message_list: list[dict]) -> AsyncIterator[str]:
-    cfg = get_settings()
-    headers = {"Authorization": f"Bearer {cfg.deepseek_api_key}", "Content-Type": "application/json"}
-    payload = {"model": cfg.deepseek_model, "messages": message_list, "stream": True}
+    cfg = load_deepseek_config()
+    headers = {"Authorization": f"Bearer {cfg.api_key}", "Content-Type": "application/json"}
+    payload = {"model": cfg.model, "messages": message_list, "stream": True}
     last_error = None
     for attempt in range(3):
         try:
             async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=10)) as client:
-                async with client.stream("POST", f"{cfg.deepseek_base_url.rstrip('/')}/chat/completions", headers=headers, json=payload) as response:
+                async with client.stream("POST", f"{cfg.base_url.rstrip('/')}/chat/completions", headers=headers, json=payload) as response:
                     if response.status_code == 429:
                         raise httpx.HTTPStatusError("rate limited", request=response.request, response=response)
                     response.raise_for_status()

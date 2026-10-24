@@ -4,19 +4,7 @@ title: Zhuang, Wenzi
 
 <link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-3">
 
-<main class="chat-workspace" data-course-ai data-course-name="会计学">
-  <section class="login-gate" data-login-gate>
-    <form class="login-card" data-login-form>
-      <div class="assistant-avatar">会</div>
-      <h2>登录课程助教</h2>
-      <p>首次在此浏览器使用时需要验证。</p>
-      <label>姓名<input name="name" autocomplete="name" required></label>
-      <label>学号<input name="student_no" autocomplete="username" required></label>
-      <label>个人密码<input name="password" type="password" autocomplete="current-password" required></label>
-      <p class="form-error" data-login-error role="alert"></p>
-      <button type="submit">登录</button>
-    </form>
-  </section>
+<main class="chat-workspace" data-course-ai data-course-name="会计学" data-assistant-id="financial_accounting">
   <aside class="chat-sidebar">
     <div class="sidebar-top">
       <a class="workspace-back" href="/teaching.html">← 返回课程列表</a>
@@ -53,7 +41,7 @@ title: Zhuang, Wenzi
   <section class="chat-main">
     <header class="chat-header">
       <div><span class="mobile-course-name">会计学</span><strong data-chat-mode>课程须知</strong></div>
-      <button class="preview-badge logout-button" type="button" data-logout hidden>退出登录</button>
+      <span class="preview-badge">无需登录</span>
     </header>
 
     <div class="conversation" data-chat-log aria-live="polite">
@@ -82,4 +70,4 @@ title: Zhuang, Wenzi
 </main>
 
 <script src="../../../assets/js/course-ai-config.js"></script>
-<script src="../../../assets/js/course-ai.js?v=20260908-3" defer></script>
+<script src="../../../assets/js/course-ai.js?v=20261024-1" defer></script>

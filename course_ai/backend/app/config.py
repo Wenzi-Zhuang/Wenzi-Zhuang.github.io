@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     device_token_days: int = 180
     max_upload_mb: int = 50
     thesis_root: Path = Path("/volume1/courses/thesis_guidance")
+    assistant_library_root: Path = Path("/library")
+    runtime_config_root: Path = Path("/config")
+    setup_code: str = "CHANGE_ME"
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

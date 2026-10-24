@@ -1,6 +1,7 @@
 (function () {
   document.querySelectorAll('[data-course-ai]').forEach(function (app) {
     var apiBase = String(window.COURSE_AI_API_BASE || '').replace(/\/$/, '');
+    var assistantId = app.dataset.assistantId;
     var form = app.querySelector('[data-chat-form]');
     var input = app.querySelector('[data-chat-input]');
     var log = app.querySelector('[data-chat-log]');
@@ -9,80 +10,14 @@
     var mode = app.querySelector('[data-chat-mode]');
     var welcomeCopy = app.querySelector('[data-welcome-copy]');
     var welcome = app.querySelector('.welcome-block');
-    var gate = app.querySelector('[data-login-gate]');
-    var loginForm = app.querySelector('[data-login-form]');
-    var loginError = app.querySelector('[data-login-error]');
-    var logout = app.querySelector('[data-logout]');
     var connection = app.querySelector('[data-connection-state]');
-    var tokenKey = 'course-ai-device-token';
-    var token = '';
-    try { token = localStorage.getItem(tokenKey) || ''; } catch (error) {}
-
-    function api(path, options) {
-      options = options || {};
-      options.headers = Object.assign({'Content-Type': 'application/json'}, options.headers || {});
-      if (token) options.headers.Authorization = 'Bearer ' + token;
-      return fetch(apiBase + path, options);
-    }
+    var conversation = [];
+    if (connection) connection.textContent = 'DeepSeek / NAS 公共与专属知识库';
 
     function appendMessage(text, role) {
-      var message = document.createElement('div');
-      message.className = 'message message-' + role;
-      message.textContent = text;
-      log.appendChild(message);
-      log.scrollTop = log.scrollHeight;
-      return message;
+      var message = document.createElement('div'); message.className = 'message message-' + role;
+      message.textContent = text; log.appendChild(message); log.scrollTop = log.scrollHeight; return message;
     }
-
-    function setAuthenticated(ok) {
-      gate.hidden = ok;
-      logout.hidden = !ok;
-      if (connection) connection.textContent = ok ? 'NAS 课程资料库已连接' : '需要设备验证';
-      app.classList.toggle('is-authenticated', ok);
-    }
-
-    async function checkSession() {
-      if (!token || apiBase.indexOf('YOUR_') !== -1) return setAuthenticated(false);
-      try {
-        var response = await api('/api/auth/me');
-        if (!response.ok) throw new Error();
-        setAuthenticated(true);
-      } catch (error) {
-        token = '';
-        try { localStorage.removeItem(tokenKey); } catch (storageError) {}
-        setAuthenticated(false);
-      }
-    }
-
-    loginForm.addEventListener('submit', async function (event) {
-      event.preventDefault();
-      loginError.textContent = '';
-      var submit = loginForm.querySelector('[type="submit"]');
-      submit.disabled = true;
-      var data = Object.fromEntries(new FormData(loginForm).entries());
-      if (apiBase.indexOf('YOUR_') !== -1) {
-        loginError.textContent = '课程服务器域名尚未配置。'; submit.disabled = false; return;
-      }
-      data.platform = navigator.platform || '';
-      data.language = navigator.language || '';
-      data.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
-      try {
-        var response = await api('/api/auth/register-device', {method: 'POST', body: JSON.stringify(data)});
-        var result = await response.json();
-        if (!response.ok) throw new Error(result.detail || '验证失败');
-        token = result.device_token; localStorage.setItem(tokenKey, token);
-        loginForm.reset(); setAuthenticated(true); input.focus();
-      } catch (error) { loginError.textContent = error.message || '无法连接课程服务器'; }
-      finally { submit.disabled = false; }
-    });
-
-    logout.addEventListener('click', async function () {
-      try { await api('/api/auth/logout', {method: 'POST'}); } catch (error) {}
-      token = '';
-      try { localStorage.removeItem(tokenKey); } catch (error) {}
-      setAuthenticated(false);
-    });
-
     app.querySelectorAll('[data-prompt]').forEach(function (button) {
       button.addEventListener('click', function () { input.value = button.textContent.trim(); input.focus(); });
     });
@@ -93,14 +28,10 @@
           if (selectedGroup) {
             var shouldOpen = !selectedGroup.classList.contains('open');
             app.querySelectorAll('.feature-group').forEach(function (group) {
-              group.classList.remove('open');
-              var trigger = group.querySelector('.feature-button');
+              group.classList.remove('open'); var trigger = group.querySelector('.feature-button');
               if (trigger) trigger.setAttribute('aria-expanded', 'false');
             });
-            if (shouldOpen) {
-              selectedGroup.classList.add('open');
-              button.setAttribute('aria-expanded', 'true');
-            }
+            if (shouldOpen) { selectedGroup.classList.add('open'); button.setAttribute('aria-expanded', 'true'); }
           }
         }
         app.querySelectorAll('[data-feature]').forEach(function (item) { item.classList.remove('active'); });
@@ -111,17 +42,22 @@
     });
     app.querySelector('[data-new-chat]').addEventListener('click', function () {
       log.querySelectorAll('.message, .source-list').forEach(function (message) { message.remove(); });
-      welcome.hidden = false; input.value = ''; input.focus();
+      conversation = []; welcome.hidden = false; input.value = ''; input.focus();
     });
 
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
       var question = input.value.trim(); if (!question || form.dataset.busy === 'true') return;
+      if (!assistantId) return appendMessage('页面尚未配置 AI 助手 ID。', 'assistant');
       appendMessage(question, 'user'); welcome.hidden = true; input.value = ''; form.dataset.busy = 'true';
+      conversation.push({role: 'user', content: question}); conversation = conversation.slice(-11);
       var answer = appendMessage('', 'assistant');
       try {
-        var response = await api('/api/chat/stream', {method: 'POST', body: JSON.stringify({question: question, skill: mode.textContent})});
-        if (response.status === 401) { setAuthenticated(false); throw new Error('设备验证已失效，请重新验证'); }
+        if (apiBase.indexOf('YOUR_') !== -1) throw new Error('NAS API 域名尚未配置');
+        var response = await fetch(apiBase + '/api/assistants/' + encodeURIComponent(assistantId) + '/chat/stream', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({messages: conversation, mode: mode.textContent})
+        });
         if (!response.ok) { var failure = await response.json(); throw new Error(failure.detail || '回答失败'); }
         var reader = response.body.getReader(), decoder = new TextDecoder(), buffer = '', sources = [];
         while (true) {
@@ -138,22 +74,21 @@
             log.scrollTop = log.scrollHeight;
           });
         }
+        conversation.push({role: 'assistant', content: answer.textContent}); conversation = conversation.slice(-12);
         var sourceBox = document.createElement('div'); sourceBox.className = 'source-list';
-        sourceBox.textContent = sources.length ? '课程来源：' + sources.map(function (s) { return s.title + (s.locator ? '（' + s.locator + '）' : ''); }).join('；') : '以下内容主要依据一般会计知识，而非课程指定材料。';
+        sourceBox.textContent = sources.length ? 'NAS 资料来源：' + sources.map(function (source) { return source.title; }).join('；') : '本次未检索到匹配的 NAS 专属资料，回答主要依据一般知识。';
         log.appendChild(sourceBox);
-      } catch (error) { answer.textContent = error.message || '回答服务暂时不可用，请稍后重试。'; }
+      } catch (error) { answer.textContent = error.message || '回答服务暂时不可用，请稍后重试。'; conversation.pop(); }
       finally { form.dataset.busy = 'false'; input.focus(); }
     });
-
     input.addEventListener('keydown', function (event) {
       if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); form.requestSubmit(); }
     });
     fileInput.addEventListener('change', function () {
       fileList.innerHTML = '';
       Array.prototype.slice.call(fileInput.files, 0, 5).forEach(function (file) {
-        var item = document.createElement('li'); item.textContent = file.name + ' · 提交接口将在第五阶段开放'; fileList.appendChild(item);
+        var item = document.createElement('li'); item.textContent = file.name + ' · 文件互动将在后续阶段接入'; fileList.appendChild(item);
       });
     });
-    checkSession();
   });
 }());

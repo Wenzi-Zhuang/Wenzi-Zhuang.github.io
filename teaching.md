@@ -36,7 +36,7 @@ title: Zhuang, Wenzi
       <div><span class="card-tag">本科 / 硕士 · 毕业论文指导</span><h2>案例论文</h2></div>
       <span class="card-action" aria-hidden="true">→</span>
     </a>
-    <a class="catalog-card featured emphasis thesis-card" href="/teaching/Thesis%20Guidance/readme.html">
+    <a class="catalog-card featured emphasis thesis-card" href="/teaching/Empirical%20Thesis%20Guidance/readme.html">
       <div><span class="card-tag">论文指导</span><h2>实证论文</h2></div>
       <span class="card-action" aria-hidden="true">→</span>
     </a>

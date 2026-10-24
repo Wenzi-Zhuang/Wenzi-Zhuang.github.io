@@ -4,19 +4,7 @@ title: Zhuang, Wenzi
 
 <link rel="stylesheet" href="../../../assets/css/course-ai.css?v=20260908-3">
 
-<main class="chat-workspace" data-course-ai data-course-name="实证方法与论文写作">
-  <section class="login-gate" data-login-gate>
-    <form class="login-card" data-login-form>
-      <div class="assistant-avatar">研</div>
-      <h2>登录课程助教</h2>
-      <p>首次在此浏览器使用时需要验证。</p>
-      <label>姓名<input name="name" autocomplete="name" required></label>
-      <label>学号<input name="student_no" autocomplete="username" required></label>
-      <label>个人密码<input name="password" type="password" autocomplete="current-password" required></label>
-      <p class="form-error" data-login-error role="alert"></p>
-      <button type="submit">登录</button>
-    </form>
-  </section>
+<main class="chat-workspace" data-course-ai data-course-name="实证方法与论文写作" data-assistant-id="empirical_methods">
   <aside class="chat-sidebar">
     <div class="sidebar-top">
       <a class="workspace-back" href="/teaching.html">← 返回课程列表</a>
@@ -53,13 +41,13 @@ title: Zhuang, Wenzi
       <p class="history-empty">更多对话将在后端接入后保存</p>
     </section>
 
-    <div class="sidebar-footer"><span class="connection-dot"></span>DeepSeek / NAS 待连接</div>
+    <div class="sidebar-footer"><span class="connection-dot"></span><span data-connection-state>正在连接 DeepSeek / NAS</span></div>
   </aside>
 
   <section class="chat-main">
     <header class="chat-header">
       <div><span class="mobile-course-name">实证方法与论文写作</span><strong data-chat-mode>课程须知</strong></div>
-      <button class="preview-badge logout-button" type="button" data-logout hidden>退出登录</button>
+      <span class="preview-badge">无需登录</span>
     </header>
 
     <div class="conversation" data-chat-log aria-live="polite">
@@ -82,9 +70,10 @@ title: Zhuang, Wenzi
         <textarea data-chat-input aria-label="输入课程问题" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
         <button class="round-send" type="submit" aria-label="发送">↑</button>
       </form>
-      <p class="composer-note">当前为前端演示，资料不会上传，回答也不会调用大模型。</p>
+      <p class="composer-note">消息将发送给本课程专属 AI；NAS 资料仅用于生成回答，不会显示给其他访客。</p>
     </div>
   </section>
 </main>
 
-<script src="../../../assets/js/course-ai.js?v=20260908-3" defer></script>
+<script src="../../../assets/js/course-ai-config.js"></script>
+<script src="../../../assets/js/course-ai.js?v=20261024-1" defer></script>

@@ -35,6 +35,33 @@ python3 course_ai/backend/scripts/configure_deepseek.py
 docker compose up -d --build
 ```
 
+现在也提供浏览器配置界面。先在 NAS `.env` 中填写随机设置码：
+
+```bash
+openssl rand -hex 16
+```
+
+把输出写成 `SETUP_CODE=生成的随机值`，启动容器后打开：
+
+```text
+https://你的课程API域名/setup/deepseek
+```
+
+在页面输入设置码和 DeepSeek API Key。密钥会保存到 NAS 的 `/volume1/docker/course_ai/config/deepseek.json`，权限为 `600`，不会返回 GitHub Pages。配置成功后应立即妥善保存设置码；不要把设置码或 API Key 发到聊天中。
+
+## 四套助手资料库
+
+Docker 会把 NAS 的 `/volume1/courses/ai_assistants` 挂载为助手资料库。首次启动自动创建公共目录和四套专属目录，结构与填充规则见 `NAS_ASSISTANT_LIBRARY.md`。页面与目录映射如下：
+
+| 页面 | assistant_id | NAS 专属目录 |
+| --- | --- | --- |
+| 会计学 | `financial_accounting` | `assistants/financial_accounting` |
+| 实证方法与论文写作 | `empirical_methods` | `assistants/empirical_methods` |
+| 案例论文 | `case_thesis` | `assistants/case_thesis` |
+| 实证论文 | `empirical_thesis` | `assistants/empirical_thesis` |
+
+所有页面还会读取 `common/knowledge`、`common/skills` 和 `common/requirements`。新增或更新资料文件后，不需要修改前端代码。
+
 ## 2. 启动与初始化
 
 ```bash

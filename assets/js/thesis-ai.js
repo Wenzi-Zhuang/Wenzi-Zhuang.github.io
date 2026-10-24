@@ -1,6 +1,7 @@
 (function () {
   var app = document.querySelector('[data-thesis-ai]'); if (!app) return;
   var apiBase = String(window.COURSE_AI_API_BASE || '').replace(/\/$/, '');
+  var assistantId = app.dataset.assistantId;
   var thesisForm = app.querySelector('[data-thesis-form]');
   var fileInput = app.querySelector('[data-thesis-file]');
   var fileName = app.querySelector('[data-file-name]');
@@ -39,12 +40,12 @@
     try {
       if (apiBase.indexOf('YOUR_') !== -1) throw new Error('论文指导服务器域名尚未配置');
       var requirements = app.querySelector('[data-chat-requirements]').value.trim();
-      var response = await fetch(apiBase + '/api/thesis/chat/stream', {
+      var response = await fetch(apiBase + '/api/assistants/' + encodeURIComponent(assistantId) + '/chat/stream', {
         method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({messages: conversation, requirements: requirements})
+        body: JSON.stringify({messages: conversation, mode: '论文互动指导', temporary_requirements: requirements})
       });
       if (!response.ok) { var failure = await response.json(); throw new Error(failure.detail || '回答失败'); }
-      var reader = response.body.getReader(), decoder = new TextDecoder(), buffer = '';
+      var reader = response.body.getReader(), decoder = new TextDecoder(), buffer = '', sources = [];
       while (true) {
         var chunk = await reader.read(); if (chunk.done) break;
         buffer += decoder.decode(chunk.value, {stream: true});
@@ -54,11 +55,17 @@
           var raw = (packet.match(/^data: (.+)$/m) || [])[1]; if (!raw) return;
           var data = JSON.parse(raw);
           if (eventName === 'token') answer.textContent += data.text;
+          if (eventName === 'meta') sources = data.sources || [];
           if (eventName === 'error') throw new Error(data.message);
           chatLog.scrollTop = chatLog.scrollHeight;
         });
       }
       conversation.push({role: 'assistant', content: answer.textContent}); conversation = conversation.slice(-12);
+      if (sources.length) {
+        var sourceBox = document.createElement('div'); sourceBox.className = 'source-list thesis-source-list';
+        sourceBox.textContent = 'NAS 资料来源：' + sources.map(function (source) { return source.title; }).join('；');
+        chatLog.appendChild(sourceBox);
+      }
     } catch (error) {
       answer.remove(); conversation.pop(); chatError.textContent = error.message || '论文指导服务暂时不可用';
     } finally { chatForm.dataset.busy = 'false'; chatInput.focus(); }

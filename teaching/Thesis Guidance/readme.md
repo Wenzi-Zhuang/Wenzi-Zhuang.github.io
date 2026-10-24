@@ -1,13 +1,13 @@
 ---
-title: 毕业论文指导
+title: 案例论文指导
 ---
 
 <link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261024-1">
 
-<main class="thesis-workspace" data-thesis-ai>
+<main class="thesis-workspace" data-thesis-ai data-assistant-id="case_thesis">
   <header class="thesis-header">
     <a href="/teaching.html">← 返回教学</a>
-    <div><span>本科毕业论文</span><h1>毕业论文 AI 指导</h1></div>
+    <div><span>本科 / 硕士 · 毕业论文指导</span><h1>案例论文 AI 指导</h1></div>
     <span class="preview-badge">无需登录</span>
   </header>
 
@@ -24,7 +24,7 @@ title: 毕业论文指导
     </aside>
 
     <section class="thesis-panel" data-thesis-section="check" hidden>
-      <div class="thesis-intro"><span class="assistant-avatar">论</span><div><h2>毕业论文指导助手</h2><p>先做可验证的程序检查，再由 DeepSeek 根据你提供的学院要求给出修改清单。</p></div></div>
+      <div class="thesis-intro"><span class="assistant-avatar">案</span><div><h2>案例论文格式检查</h2><p>先做可验证的程序检查，再由 DeepSeek 根据你提供的学院要求给出修改清单。</p></div></div>
       <form data-thesis-form>
         <label class="drop-zone" data-drop-zone>
           <input type="file" name="file" accept=".docx,.pdf" required data-thesis-file>
@@ -43,15 +43,15 @@ title: 毕业论文指导
     </section>
 
     <section class="thesis-panel thesis-chat-panel" data-thesis-section="chat">
-      <div class="thesis-intro"><span class="assistant-avatar">论</span><div><h2>毕业论文 AI 助手</h2><p>可以询问格式规范、论文结构、参考文献和修改方法；助手不会代写研究结论。</p></div></div>
+      <div class="thesis-intro"><span class="assistant-avatar">案</span><div><h2>案例论文 AI 助手</h2><p>可以询问案例选择、案例分析框架、证据组织、格式规范和修改方法；助手不会代写研究结论。</p></div></div>
       <label class="requirements-field compact"><span>学院或学校格式要求（可选，会作为本次对话依据）</span><textarea rows="4" data-chat-requirements placeholder="粘贴学校论文格式要求；未提供时，助手会明确说明无法判断学校专用规定。"></textarea></label>
       <div class="thesis-chat-log" data-thesis-chat-log aria-live="polite">
         <div class="thesis-chat-welcome">
-          <p>你好，我可以协助你理解毕业论文格式与结构要求。</p>
+          <p>你好，我可以协助你梳理案例论文的结构、论证与格式要求。</p>
           <div class="thesis-starters">
-            <button type="button" data-thesis-prompt>摘要和关键词通常应该怎样组织？</button>
-            <button type="button" data-thesis-prompt>如何检查标题编号是否一致？</button>
-            <button type="button" data-thesis-prompt>参考文献格式常见错误有哪些？</button>
+            <button type="button" data-thesis-prompt>如何选择有研究价值的案例？</button>
+            <button type="button" data-thesis-prompt>案例论文的分析框架如何组织？</button>
+            <button type="button" data-thesis-prompt>案例证据与研究结论如何对应？</button>
           </div>
         </div>
       </div>
