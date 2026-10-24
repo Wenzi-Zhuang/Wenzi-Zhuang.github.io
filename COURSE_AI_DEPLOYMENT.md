@@ -51,14 +51,14 @@ https://你的课程API域名/setup/deepseek
 
 ## 四套助手资料库
 
-Docker 会把 NAS 的 `/volume1/courses/ai_assistants` 挂载为助手资料库。首次启动自动创建公共目录和四套专属目录，结构与填充规则见 `NAS_ASSISTANT_LIBRARY.md`。页面与目录映射如下：
+Docker 会把 NAS 现有的 `/volume1/courses` 挂载为助手资料库。首次启动只补充缺失的公共目录、专属子目录和说明文件，结构与填充规则见 `NAS_ASSISTANT_LIBRARY.md`。页面与目录映射如下：
 
 | 页面 | assistant_id | NAS 专属目录 |
 | --- | --- | --- |
-| 会计学 | `financial_accounting` | `assistants/financial_accounting` |
-| 实证方法与论文写作 | `empirical_methods` | `assistants/empirical_methods` |
-| 案例论文 | `case_thesis` | `assistants/case_thesis` |
-| 实证论文 | `empirical_thesis` | `assistants/empirical_thesis` |
+| 会计学 | `financial_accounting` | `financial_accounting` |
+| 实证方法与论文写作 | `empirical_methods` | `academic_writing` |
+| 案例论文 | `case_study` | `case_study` |
+| 实证论文 | `empirical_study` | `empirical_study` |
 
 所有页面还会读取 `common/knowledge`、`common/skills` 和 `common/requirements`。新增或更新资料文件后，不需要修改前端代码。
 

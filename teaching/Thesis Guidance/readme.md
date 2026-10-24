@@ -4,7 +4,7 @@ title: 案例论文指导
 
 <link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261024-1">
 
-<main class="thesis-workspace" data-thesis-ai data-assistant-id="case_thesis">
+<main class="thesis-workspace" data-thesis-ai data-assistant-id="case_study">
   <header class="thesis-header">
     <a href="/teaching.html">← 返回教学</a>
     <div><span>本科 / 硕士 · 毕业论文指导</span><h1>案例论文 AI 指导</h1></div>

@@ -4,7 +4,7 @@ title: 实证论文指导
 
 <link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261024-2">
 
-<main class="thesis-workspace" data-thesis-ai data-assistant-id="empirical_thesis">
+<main class="thesis-workspace" data-thesis-ai data-assistant-id="empirical_study">
   <header class="thesis-header">
     <a href="/teaching.html">← 返回教学</a>
     <div><span>论文指导</span><h1>实证论文 AI 指导</h1></div>

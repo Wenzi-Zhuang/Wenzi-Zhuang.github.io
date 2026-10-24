@@ -1,31 +1,32 @@
 # NAS AI 助手资料库结构
 
-后端首次启动时会在 `/volume1/courses/ai_assistants` 自动创建以下目录。只创建缺失目录和说明文件，不覆盖已有内容。
+后端首次启动时会在现有 `/volume1/courses` 下补充以下目录。只创建缺失目录和说明文件，不覆盖已有内容；其中 `financial_accounting` 和 `academic_writing` 直接复用 NAS 上现有课程目录。
 
 ```text
-ai_assistants/
+courses/
 ├── common/                         # 四个助手共同使用
 │   ├── knowledge/                  # 通用知识、校级制度、共同参考资料
 │   ├── skills/                     # 通用分析与教学技能
 │   ├── requirements/               # 通用回答要求、边界与禁止事项
 │   └── README.md
-└── assistants/
-    ├── financial_accounting/       # 会计学
-    │   ├── knowledge/
-    │   ├── skills/
-    │   └── requirements/
-    ├── empirical_methods/          # 实证方法与论文写作
-    │   ├── knowledge/
-    │   ├── skills/
-    │   └── requirements/
-    ├── case_thesis/                # 案例论文
-    │   ├── knowledge/
-    │   ├── skills/
-    │   └── requirements/
-    └── empirical_thesis/           # 实证论文
-        ├── knowledge/
-        ├── skills/
-        └── requirements/
+├── financial_accounting/           # 会计学（复用现有编号结构）
+│   ├── 00_system/                  # 要求
+│   ├── 10_sources/                 # 原始知识资料
+│   ├── 20_knowledge_system/        # 整理后的知识库
+│   └── 40_skills/                  # 技能库
+├── academic_writing/               # 实证方法与论文写作（复用现有编号结构）
+│   ├── 00_system/
+│   ├── 10_sources/
+│   ├── 20_knowledge_system/
+│   └── 40_skills/
+├── case_study/                     # 案例论文
+│   ├── knowledge/
+│   ├── skills/
+│   └── requirements/
+└── empirical_study/                # 实证论文
+    ├── knowledge/
+    ├── skills/
+    └── requirements/
 ```
 
 ## 放置规则
@@ -42,7 +43,7 @@ ai_assistants/
 
 ## 推荐的最小内容
 
-每个助手先准备三个 Markdown 文件：
+`case_study`、`empirical_study` 和 `common` 可先准备三个 Markdown 文件：
 
 ```text
 requirements/assistant_rules.md
