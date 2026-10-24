@@ -341,21 +341,8 @@ body {
   transform: rotate(180deg);
 }
 
-.course-archive summary span {
-  margin-left: auto;
-  color: var(--course-muted);
-  font-size: 0.8rem;
-  font-weight: 400;
-}
-
 .archive-catalog {
   margin-top: 1rem;
-}
-
-@media (max-width: 560px) {
-  .course-archive summary span {
-    display: none;
-  }
 }
 
 .catalog-card.emphasis h2 {
@@ -364,22 +351,23 @@ body {
 }
 
 .thesis-catalog {
-  margin-top: 1rem;
+  margin-top: 1.6rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--course-line);
 }
 
 .catalog-card.thesis-card {
-  background: rgba(235, 233, 226, 0.46);
-  border-color: #dce1dc;
+  border-left: 3px solid #c4c9c3;
 }
 
 .catalog-card.thesis-card .card-tag,
 .catalog-card.thesis-card .card-action {
-  color: #756f63;
+  color: #69756e;
 }
 
 .catalog-card.thesis-card:hover {
-  background: rgba(235, 233, 226, 0.7);
-  border-color: #c9ccc5;
+  border-color: #a9cabc;
+  border-left-color: #839b8d;
 }
 
 .catalog-card p {

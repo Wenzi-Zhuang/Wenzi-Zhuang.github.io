@@ -27,7 +27,7 @@ title: Zhuang, Wenzi
       <span class="card-action" aria-hidden="true">→</span>
     </a>
     <details class="course-archive">
-      <summary>更多课程 <span>财务会计 · 财务管理 · 会计审计理论</span></summary>
+      <summary>更多课程</summary>
       <div class="course-catalog archive-catalog">
         <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021、2025</span><h2>财务会计</h2></div></article>
         <article class="catalog-card"><div><span class="card-tag">学硕 · 2020、2022</span><h2>财务管理</h2></div></article>
