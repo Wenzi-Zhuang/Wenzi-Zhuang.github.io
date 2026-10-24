@@ -3,21 +3,17 @@ import json
 import secrets
 import time
 from collections import defaultdict, deque
-from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
-from sqlalchemy import select, text
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .auth import current_student, issue_token, token_hash, verify_password
 from .config import get_settings
 from .database import Base, engine, get_db
-from .models import Device, Student
-from .services.deepseek import stream_answer, stream_messages
-from .services.rag import retrieve
+from .services.deepseek import stream_messages
 from .services.thesis import inspect_thesis
 from .services.assistant_context import ASSISTANTS, build_system_messages, ensure_library_structure, load_assistant_context
 from .services.runtime_config import load_deepseek_config, save_deepseek_config
@@ -26,7 +22,6 @@ cfg = get_settings()
 app = FastAPI(title=f"{cfg.course_name} AI API", docs_url=None if cfg.app_env == "production" else "/docs")
 app.add_middleware(CORSMiddleware, allow_origins=[cfg.frontend_origin], allow_credentials=False,
                    allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"])
-student_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 thesis_semaphore = asyncio.Semaphore(3)
 assistant_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 assistant_semaphore = asyncio.Semaphore(4)
@@ -44,20 +39,6 @@ def check_hourly_limit(request_times: deque[float], limit: int) -> None:
     if len(request_times) >= limit:
         raise HTTPException(429, "当前服务使用量已达上限，请稍后再试")
     request_times.append(now)
-
-
-class RegisterBody(BaseModel):
-    name: str = Field(min_length=1, max_length=100)
-    student_no: str = Field(min_length=1, max_length=64)
-    password: str
-    platform: str | None = None
-    language: str | None = None
-    timezone: str | None = None
-
-
-class ChatBody(BaseModel):
-    question: str = Field(min_length=1, max_length=8000)
-    skill: str = Field(default="课程知识解释", max_length=50)
 
 
 class ThesisMessage(BaseModel):
@@ -142,69 +123,6 @@ async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody, requ
             except Exception:
                 yield f"event: error\ndata: {json.dumps({'message': 'AI服务暂时不可用，请检查DeepSeek配置或稍后重试'}, ensure_ascii=False)}\n\n"
     return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-
-
-@app.post("/api/auth/register-device")
-async def register(body: RegisterBody, request: Request, db: AsyncSession = Depends(get_db)):
-    student = (await db.execute(select(Student).where(Student.student_no == body.student_no.strip()))).scalar_one_or_none()
-    if (not student or student.status != "active" or student.name.strip() != body.name.strip()
-            or not verify_password(student.password_hash, body.password)):
-        raise HTTPException(403, "姓名、学号或密码错误")
-    raw, digest, expires = issue_token()
-    ip = request.client.host if request.client else None
-    db.add(Device(student_id=student.student_id, token_hash=digest, expires_at=expires,
-                  user_agent=request.headers.get("user-agent"), platform=body.platform,
-                  language=body.language, timezone=body.timezone, first_ip=ip, last_ip=ip))
-    await db.commit()
-    return {"device_token": raw, "expires_at": expires, "student": {"name": student.name, "student_no": student.student_no}}
-
-
-@app.get("/api/auth/me")
-async def me(student: Student = Depends(current_student)):
-    return {"name": student.name, "student_no": student.student_no}
-
-
-@app.post("/api/auth/logout")
-async def logout(request: Request, student: Student = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    auth = request.headers.get("authorization", "")[7:]
-    device = (await db.execute(select(Device).where(Device.token_hash == token_hash(auth), Device.student_id == student.student_id))).scalar_one()
-    device.revoked_at = datetime.now(timezone.utc)
-    await db.commit()
-    return {"ok": True}
-
-
-@app.post("/api/chat/stream")
-async def chat_stream(body: ChatBody, student: Student = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    lock = student_locks[str(student.student_id)]
-    if lock.locked():
-        raise HTTPException(409, "你已有一个回答正在生成")
-    evidence, retrieval_ms = await retrieve(db, body.question)
-
-    async def events():
-        async with lock:
-            try:
-                yield f"event: meta\ndata: {json.dumps({'retrieval_ms': round(retrieval_ms), 'sources': [{'title': e.title, 'locator': e.locator} for e in evidence]}, ensure_ascii=False)}\n\n"
-                async for token in stream_answer(body.question, body.skill, evidence):
-                    yield f"event: token\ndata: {json.dumps({'text': token}, ensure_ascii=False)}\n\n"
-                yield "event: done\ndata: {}\n\n"
-            except Exception:
-                yield f"event: error\ndata: {json.dumps({'message': '回答服务暂时不可用，请稍后重试'}, ensure_ascii=False)}\n\n"
-    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-
-
-@app.post("/api/chat")
-async def chat(body: ChatBody, student: Student = Depends(current_student), db: AsyncSession = Depends(get_db)):
-    lock = student_locks[str(student.student_id)]
-    if lock.locked():
-        raise HTTPException(409, "你已有一个回答正在生成")
-    evidence, retrieval_ms = await retrieve(db, body.question)
-    async with lock:
-        try:
-            answer = "".join([part async for part in stream_answer(body.question, body.skill, evidence)])
-        except Exception as exc:
-            raise HTTPException(503, "回答服务暂时不可用，请稍后重试") from exc
-    return {"answer": answer, "retrieval_ms": round(retrieval_ms),
-            "sources": [{"title": item.title, "locator": item.locator} for item in evidence]}
 
 
 @app.post("/api/thesis/check")
