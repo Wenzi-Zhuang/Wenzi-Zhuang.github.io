@@ -24,6 +24,10 @@ services:
       dockerfile: Dockerfile.nas
     restart: unless-stopped
     env_file: .env
+    environment:
+      # GitHub Pages is the browser origin that is allowed to call this API.
+      FRONTEND_ORIGIN: https://wenzi-zhuang.github.io
+      COURSE_ROOT: /library/financial_accounting
     depends_on:
       postgres:
         condition: service_healthy

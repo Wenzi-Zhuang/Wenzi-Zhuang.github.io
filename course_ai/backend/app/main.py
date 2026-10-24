@@ -1,7 +1,8 @@
 import asyncio
 import json
 import secrets
-from collections import defaultdict
+import time
+from collections import defaultdict, deque
 from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
@@ -29,6 +30,20 @@ student_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 thesis_semaphore = asyncio.Semaphore(3)
 assistant_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 assistant_semaphore = asyncio.Semaphore(4)
+# The public, login-free assistant needs a server-side cost ceiling.  This
+# process runs as a single Uvicorn worker in the NAS deployment.
+assistant_request_times: deque[float] = deque()
+thesis_request_times: deque[float] = deque()
+setup_request_times: deque[float] = deque()
+
+
+def check_hourly_limit(request_times: deque[float], limit: int) -> None:
+    now = time.monotonic()
+    while request_times and request_times[0] <= now - 3600:
+        request_times.popleft()
+    if len(request_times) >= limit:
+        raise HTTPException(429, "当前服务使用量已达上限，请稍后再试")
+    request_times.append(now)
 
 
 class RegisterBody(BaseModel):
@@ -88,13 +103,14 @@ async def deepseek_setup_save(
     setup_code: str = Form(...), api_key: str = Form(...),
     base_url: str = Form("https://api.deepseek.com"), model: str = Form("deepseek-chat"),
 ):
+    check_hourly_limit(setup_request_times, 10)
     if cfg.setup_code == "CHANGE_ME" or not secrets.compare_digest(setup_code, cfg.setup_code):
         raise HTTPException(403, "设置码错误，或尚未在 NAS 的 .env 中配置 SETUP_CODE")
     if not api_key.strip() or api_key.strip() == "CHANGE_ME":
         raise HTTPException(400, "API Key 无效")
-    if not base_url.startswith("https://"):
-        raise HTTPException(400, "Base URL 必须使用 HTTPS")
-    save_deepseek_config(api_key.strip(), base_url.strip().rstrip("/"), model.strip())
+    if base_url.strip().rstrip("/") != "https://api.deepseek.com":
+        raise HTTPException(400, "仅支持官方 DeepSeek API 地址")
+    save_deepseek_config(api_key.strip(), "https://api.deepseek.com", model.strip())
     return "<meta charset='utf-8'><div style='font-family:sans-serif;max-width:520px;margin:10vh auto'><h1>配置成功</h1><p>DeepSeek Key 已保存到 NAS 私有目录，网页前端无法读取。</p><p><a href='/health'>检查服务状态</a></p></div>"
 
 
@@ -102,10 +118,13 @@ async def deepseek_setup_save(
 async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody, request: Request):
     if assistant_id not in ASSISTANTS:
         raise HTTPException(404, "AI 助手不存在")
+    if sum(len(item.content) for item in body.messages) + len(body.temporary_requirements) > 16000:
+        raise HTTPException(413, "本次对话内容过长，请开始新对话或精简要求")
     client_ip = request.client.host if request.client else "unknown"
     lock = assistant_locks[f"{client_ip}:{assistant_id}"]
     if lock.locked() or assistant_semaphore.locked():
         raise HTTPException(429, "已有回答正在生成，请稍后重试")
+    check_hourly_limit(assistant_request_times, 30)
     query = next((item.content for item in reversed(body.messages) if item.role == "user"), "")
     context = load_assistant_context(assistant_id, query)
     message_list = build_system_messages(context, body.mode)
@@ -195,6 +214,8 @@ async def thesis_check(
 ):
     if thesis_semaphore.locked():
         raise HTTPException(429, "当前检查人数较多，请稍后重试")
+    if len(requirements) > 6000:
+        raise HTTPException(413, "格式要求不能超过 6000 字")
     suffix = "." + file.filename.rsplit(".", 1)[-1].lower() if file.filename and "." in file.filename else ""
     if suffix not in {".docx", ".pdf"}:
         raise HTTPException(415, "只接受 DOCX 或 PDF 论文")
@@ -205,6 +226,7 @@ async def thesis_check(
         raise HTTPException(400, "文件内容不是有效 PDF")
     if suffix == ".docx" and not content.startswith(b"PK"):
         raise HTTPException(400, "文件内容不是有效 DOCX")
+    check_hourly_limit(thesis_request_times, 10)
     try:
         async with thesis_semaphore:
             return await inspect_thesis(content, suffix, requirements)

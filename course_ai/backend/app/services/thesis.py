@@ -6,7 +6,7 @@ from pypdf import PdfReader
 
 from .deepseek import stream_answer
 
-THESIS_SYSTEM_PROMPT = """你是严谨的本科毕业论文格式审查助手。你只检查格式、结构和写作规范，不评价或代写研究结论。必须区分程序已经验证的事实、用户提供的学校要求和无法从文本判断的项目。不得编造页码、字体、行距、学校规定或检查结果；证据不足时明确要求人工核对。"""
+THESIS_SYSTEM_PROMPT = """你是严谨的毕业论文格式审查助手，适用于本科和硕士论文。你只检查格式、结构和写作规范，不评价或代写研究结论。必须区分程序已经验证的事实、用户提供的学校要求和无法从文本判断的项目。不得编造页码、字体、行距、学校规定或检查结果；证据不足时明确要求人工核对。"""
 
 
 def _cm(value):
@@ -66,7 +66,7 @@ def _pdf_report(content: bytes) -> tuple[str, list[dict]]:
 
 async def inspect_thesis(content: bytes, suffix: str, requirements: str) -> dict:
     text, checks = _docx_report(content) if suffix == ".docx" else _pdf_report(content)
-    requirement_text = requirements.strip() or "未提供学校专用格式规范，请按通用本科毕业论文结构审阅，并明确哪些项目无法确定。"
+    requirement_text = requirements.strip() or "未提供学校专用格式规范，请按通用毕业论文结构审阅，并明确哪些项目无法确定。"
     prompt = f"""请检查下面毕业论文是否满足格式与结构要求。只能依据给出的论文文字、格式要求和程序检查结果，不得编造页码、字体或学校规定。
 
 格式要求：

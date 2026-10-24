@@ -75,5 +75,5 @@ title: Zhuang, Wenzi
   </section>
 </main>
 
-<script src="../../../assets/js/course-ai-config.js"></script>
+<script src="../../../assets/js/course-ai-config.js?v=20261025-1"></script>
 <script src="../../../assets/js/course-ai.js?v=20261024-1" defer></script>

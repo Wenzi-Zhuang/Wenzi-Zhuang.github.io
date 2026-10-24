@@ -30,7 +30,7 @@ async def stream_answer(question: str, skill: str, evidence: list[Evidence], sys
 async def stream_messages(message_list: list[dict]) -> AsyncIterator[str]:
     cfg = load_deepseek_config()
     headers = {"Authorization": f"Bearer {cfg.api_key}", "Content-Type": "application/json"}
-    payload = {"model": cfg.model, "messages": message_list, "stream": True}
+    payload = {"model": cfg.model, "messages": message_list, "stream": True, "max_tokens": 2048}
     last_error = None
     for attempt in range(3):
         try:

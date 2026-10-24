@@ -20,7 +20,7 @@ title: 案例论文指导
         <button type="button" data-thesis-tab="check">论文格式检查</button>
       </nav>
       <ol><li>先粘贴学院格式要求</li><li>随时向 AI 助手提问</li><li>上传 DOCX 或 PDF 检查</li><li>修改后重新运行检查</li></ol>
-      <div class="privacy-note"><strong>隐私说明</strong><p>文件经 NAS 后端解析后发送必要文本给 DeepSeek，不发送姓名和学号。请勿上传含敏感个人信息的附件。</p></div>
+      <div class="privacy-note"><strong>隐私说明</strong><p>文件由 NAS 后端解析，提取的论文正文（最多前 30000 字）会发送给 DeepSeek。系统不会额外附加姓名或学号，但文件正文中若含有这些信息，也可能随正文发送。提交前请移除敏感个人信息。</p></div>
     </aside>
 
     <section class="thesis-panel" data-thesis-section="check" hidden>
@@ -65,5 +65,5 @@ title: 案例论文指导
   </section>
 </main>
 
-<script src="../../assets/js/course-ai-config.js"></script>
+<script src="../../assets/js/course-ai-config.js?v=20261025-1"></script>
 <script src="../../assets/js/thesis-ai.js?v=20261024-1" defer></script>
