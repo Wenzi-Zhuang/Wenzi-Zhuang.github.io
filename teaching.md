@@ -37,6 +37,7 @@ title: Zhuang, Wenzi
   </section>
 
   <section class="course-catalog thesis-catalog" aria-label="毕业论文指导">
+    <p class="catalog-group-label">论文指导</p>
     <a class="catalog-card featured emphasis thesis-card" href="/teaching/Thesis%20Guidance/readme.html">
       <div><span class="card-tag">本科 / 专硕 · 毕业论文指导</span><h2>案例论文</h2></div>
       <span class="card-action" aria-hidden="true">→</span>
