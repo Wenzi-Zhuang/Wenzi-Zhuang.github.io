@@ -2,24 +2,28 @@
 title: 毕业论文指导
 ---
 
-<link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261023-1">
+<link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261024-1">
 
 <main class="thesis-workspace" data-thesis-ai>
   <header class="thesis-header">
     <a href="/teaching.html">← 返回教学</a>
-    <div><span>本科毕业论文</span><h1>论文格式 AI 检查</h1></div>
+    <div><span>本科毕业论文</span><h1>毕业论文 AI 指导</h1></div>
     <span class="preview-badge">无需登录</span>
   </header>
 
   <section class="thesis-grid">
     <aside class="thesis-guide">
       <p class="eyebrow">Workflow</p>
-      <h2>提交前检查</h2>
-      <ol><li>上传 DOCX 原稿（推荐）或 PDF</li><li>粘贴学院格式要求</li><li>运行结构与格式检查</li><li>按优先级修改后重新检查</li></ol>
+      <h2>论文指导</h2>
+      <nav class="thesis-tools" aria-label="论文指导功能">
+        <button class="active" type="button" data-thesis-tab="chat">AI 互动问答</button>
+        <button type="button" data-thesis-tab="check">论文格式检查</button>
+      </nav>
+      <ol><li>先粘贴学院格式要求</li><li>随时向 AI 助手提问</li><li>上传 DOCX 或 PDF 检查</li><li>修改后重新运行检查</li></ol>
       <div class="privacy-note"><strong>隐私说明</strong><p>文件经 NAS 后端解析后发送必要文本给 DeepSeek，不发送姓名和学号。请勿上传含敏感个人信息的附件。</p></div>
     </aside>
 
-    <section class="thesis-panel">
+    <section class="thesis-panel" data-thesis-section="check" hidden>
       <div class="thesis-intro"><span class="assistant-avatar">论</span><div><h2>毕业论文指导助手</h2><p>先做可验证的程序检查，再由 DeepSeek 根据你提供的学院要求给出修改清单。</p></div></div>
       <form data-thesis-form>
         <label class="drop-zone" data-drop-zone>
@@ -37,8 +41,29 @@ title: 毕业论文指导
         <p class="result-limitation" data-limitations></p>
       </section>
     </section>
+
+    <section class="thesis-panel thesis-chat-panel" data-thesis-section="chat">
+      <div class="thesis-intro"><span class="assistant-avatar">论</span><div><h2>毕业论文 AI 助手</h2><p>可以询问格式规范、论文结构、参考文献和修改方法；助手不会代写研究结论。</p></div></div>
+      <label class="requirements-field compact"><span>学院或学校格式要求（可选，会作为本次对话依据）</span><textarea rows="4" data-chat-requirements placeholder="粘贴学校论文格式要求；未提供时，助手会明确说明无法判断学校专用规定。"></textarea></label>
+      <div class="thesis-chat-log" data-thesis-chat-log aria-live="polite">
+        <div class="thesis-chat-welcome">
+          <p>你好，我可以协助你理解毕业论文格式与结构要求。</p>
+          <div class="thesis-starters">
+            <button type="button" data-thesis-prompt>摘要和关键词通常应该怎样组织？</button>
+            <button type="button" data-thesis-prompt>如何检查标题编号是否一致？</button>
+            <button type="button" data-thesis-prompt>参考文献格式常见错误有哪些？</button>
+          </div>
+        </div>
+      </div>
+      <form class="thesis-chat-form" data-thesis-chat-form>
+        <textarea data-thesis-chat-input rows="2" maxlength="8000" placeholder="输入你的论文问题，Enter 发送，Shift + Enter 换行" required></textarea>
+        <button type="submit" aria-label="发送">↑</button>
+      </form>
+      <p class="form-error" data-chat-error role="alert"></p>
+      <p class="composer-note">AI 建议仅供修改参考，最终格式以学院正式文件和教师审核为准。</p>
+    </section>
   </section>
 </main>
 
 <script src="../../assets/js/course-ai-config.js"></script>
-<script src="../../assets/js/thesis-ai.js?v=20261023-1" defer></script>
+<script src="../../assets/js/thesis-ai.js?v=20261024-1" defer></script>

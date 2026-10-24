@@ -15,9 +15,9 @@ from .auth import current_student, issue_token, token_hash, verify_password
 from .config import get_settings
 from .database import Base, engine, get_db
 from .models import Device, Student
-from .services.deepseek import stream_answer
+from .services.deepseek import stream_answer, stream_messages
 from .services.rag import retrieve
-from .services.thesis import inspect_thesis
+from .services.thesis import THESIS_SYSTEM_PROMPT, inspect_thesis
 
 cfg = get_settings()
 app = FastAPI(title=f"{cfg.course_name} AI API", docs_url=None if cfg.app_env == "production" else "/docs")
@@ -25,6 +25,7 @@ app.add_middleware(CORSMiddleware, allow_origins=[cfg.frontend_origin], allow_cr
                    allow_methods=["GET", "POST"], allow_headers=["Authorization", "Content-Type"])
 student_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 thesis_semaphore = asyncio.Semaphore(3)
+thesis_chat_locks: dict[str, asyncio.Lock] = defaultdict(asyncio.Lock)
 
 
 class RegisterBody(BaseModel):
@@ -39,6 +40,16 @@ class RegisterBody(BaseModel):
 class ChatBody(BaseModel):
     question: str = Field(min_length=1, max_length=8000)
     skill: str = Field(default="课程知识解释", max_length=50)
+
+
+class ThesisMessage(BaseModel):
+    role: str = Field(pattern="^(user|assistant)$")
+    content: str = Field(min_length=1, max_length=8000)
+
+
+class ThesisChatBody(BaseModel):
+    messages: list[ThesisMessage] = Field(min_length=1, max_length=12)
+    requirements: str = Field(default="", max_length=6000)
 
 
 @app.on_event("startup")
@@ -144,3 +155,27 @@ async def thesis_check(
             return await inspect_thesis(content, suffix, requirements)
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
+
+
+@app.post("/api/thesis/chat/stream")
+async def thesis_chat_stream(body: ThesisChatBody, request: Request):
+    client_key = request.client.host if request.client else "unknown"
+    lock = thesis_chat_locks[client_key]
+    if lock.locked() or thesis_semaphore.locked():
+        raise HTTPException(429, "已有对话正在生成，请稍后重试")
+    context = body.requirements.strip() or "用户尚未提供学校专用格式规范。"
+    message_list = [
+        {"role": "system", "content": THESIS_SYSTEM_PROMPT + "\n你还负责与学生互动答疑：用问题帮助学生澄清论文结构和格式；不要代写论文，不得假装看过尚未上传的文件。"},
+        {"role": "system", "content": f"用户提供的格式规范：\n{context}"},
+        *[item.model_dump() for item in body.messages],
+    ]
+
+    async def events():
+        async with lock, thesis_semaphore:
+            try:
+                async for token in stream_messages(message_list):
+                    yield f"event: token\ndata: {json.dumps({'text': token}, ensure_ascii=False)}\n\n"
+                yield "event: done\ndata: {}\n\n"
+            except Exception:
+                yield f"event: error\ndata: {json.dumps({'message': '论文指导服务暂时不可用，请稍后重试'}, ensure_ascii=False)}\n\n"
+    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})

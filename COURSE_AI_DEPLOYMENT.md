@@ -18,6 +18,23 @@ openssl rand -hex 32
 
 将输出写入 `DEVICE_TOKEN_SECRET`；将 DeepSeek 密钥只写入 NAS 上的 `.env`。
 
+DeepSeek 密钥必须直接在 NAS 的 `.env` 中填写，不能放进 GitHub Pages 或浏览器表单：
+
+```env
+DEEPSEEK_API_KEY=sk-你的真实密钥
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_MODEL=deepseek-chat
+```
+
+保存后执行 `docker compose up -d --build`。访问 `http://127.0.0.1:8000/health`，确认 `deepseek_configured` 为 `true`。论文格式检查和论文互动问答都通过 NAS 后端调用 DeepSeek，浏览器不会收到密钥。
+
+也可以在 NAS 的项目根目录运行安全输入界面（输入的密钥不会显示）：
+
+```bash
+python3 course_ai/backend/scripts/configure_deepseek.py
+docker compose up -d --build
+```
+
 ## 2. 启动与初始化
 
 ```bash
@@ -45,4 +62,4 @@ curl http://127.0.0.1:8000/health
 
 ## 当前范围
 
-已完成第一阶段主链路和第二阶段基础 lexical RAG：健康检查、PostgreSQL、学生名单导入、首次设备验证、令牌撤销、DeepSeek 流式问答、受权限约束的课程资料索引及真实来源显示。知识地图、专项测试、错题本、复习分析和文件版本提交仍需后续阶段实现；前端对应入口目前仅作为导航，不会伪造数据。
+已完成第一阶段主链路和第二阶段基础 lexical RAG：健康检查、PostgreSQL、学生名单导入、首次设备验证、令牌撤销、DeepSeek 流式问答、毕业论文互动问答与格式检查、受权限约束的课程资料索引及真实来源显示。知识地图、专项测试、错题本、复习分析和文件版本提交仍需后续阶段实现；前端对应入口目前仅作为导航，不会伪造数据。

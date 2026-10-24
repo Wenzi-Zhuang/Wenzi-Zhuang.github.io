@@ -18,21 +18,28 @@ title: Zhuang, Wenzi
   </header>
 
   <section class="course-catalog" aria-label="教学项目">
-    <a class="catalog-card featured" href="/teaching/Thesis%20Guidance/readme.html">
-      <div><span class="card-tag">本科 · 毕业论文</span><h2>毕业论文指导</h2><p>论文格式检查、修改建议与写作问答</p></div>
-      <span class="card-action">论文AI互动平台 →</span>
-    </a>
-    <a class="catalog-card featured" href="/teaching/Intro%20to%20Accounting%20Research%20101/Spring%202025/readme.html">
-      <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
-      <span class="card-action">课程AI互动平台 →</span>
-    </a>
-    <a class="catalog-card featured" href="/teaching/Financial%20Accounting%20101/Spring%202025/readme.html">
+    <a class="catalog-card featured emphasis" href="/teaching/Financial%20Accounting%20101/Spring%202025/readme.html">
       <div><span class="card-tag">本科 · 2026–2027</span><h2>会计学</h2></div>
-      <span class="card-action">课程AI互动平台 →</span>
+      <span class="card-action" aria-hidden="true">→</span>
+    </a>
+    <a class="catalog-card featured emphasis" href="/teaching/Intro%20to%20Accounting%20Research%20101/Spring%202025/readme.html">
+      <div><span class="card-tag">本科 · 2021–2027</span><h2>实证方法与论文写作</h2></div>
+      <span class="card-action" aria-hidden="true">→</span>
     </a>
     <article class="catalog-card"><div><span class="card-tag">本科 / MBA · 2021、2025</span><h2>财务会计</h2></div></article>
     <article class="catalog-card"><div><span class="card-tag">学硕 · 2020、2022</span><h2>财务管理</h2></div></article>
     <article class="catalog-card"><div><span class="card-tag">博士 · 2022</span><h2>会计审计理论</h2></div></article>
+  </section>
+
+  <section class="course-catalog thesis-catalog" aria-label="毕业论文指导">
+    <a class="catalog-card featured emphasis thesis-card" href="/teaching/Thesis%20Guidance/readme.html">
+      <div><span class="card-tag">本科 / 硕士 · 毕业论文指导</span><h2>案例论文</h2></div>
+      <span class="card-action" aria-hidden="true">→</span>
+    </a>
+    <a class="catalog-card featured emphasis thesis-card" href="/teaching/Thesis%20Guidance/readme.html">
+      <div><span class="card-tag">论文指导</span><h2>实证论文</h2></div>
+      <span class="card-action" aria-hidden="true">→</span>
+    </a>
   </section>
 
   <footer class="site-footer"><span>© 2026 Wenzi Zhuang</span><a href="mailto:zhuangwenzi@dufe.edu.cn">联系教师</a></footer>

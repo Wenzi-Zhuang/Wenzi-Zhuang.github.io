@@ -23,9 +23,14 @@ def messages(question: str, skill: str, evidence: list[Evidence], system_prompt:
 
 
 async def stream_answer(question: str, skill: str, evidence: list[Evidence], system_prompt: str = SYSTEM_PROMPT) -> AsyncIterator[str]:
+    async for token in stream_messages(messages(question, skill, evidence, system_prompt)):
+        yield token
+
+
+async def stream_messages(message_list: list[dict]) -> AsyncIterator[str]:
     cfg = get_settings()
     headers = {"Authorization": f"Bearer {cfg.deepseek_api_key}", "Content-Type": "application/json"}
-    payload = {"model": cfg.deepseek_model, "messages": messages(question, skill, evidence, system_prompt), "stream": True}
+    payload = {"model": cfg.deepseek_model, "messages": message_list, "stream": True}
     last_error = None
     for attempt in range(3):
         try:
