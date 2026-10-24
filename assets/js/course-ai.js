@@ -126,17 +126,26 @@
       var timer = document.createElement('span');
       timer.className = 'progress-timer';
       timer.setAttribute('aria-hidden', 'true');
-      timer.textContent = '0.0 秒';
+      timer.textContent = '0 秒';
       item.append(pulse, label, timer);
       log.appendChild(item);
       log.scrollTop = log.scrollHeight;
       var started = performance.now();
+      var stopped = false;
       var interval = window.setInterval(function () {
-        timer.textContent = ((performance.now() - started) / 1000).toFixed(1) + ' 秒';
-      }, 100);
+        timer.textContent = Math.floor((performance.now() - started) / 1000) + ' 秒';
+      }, 250);
+      var transition = window.setTimeout(function () {
+        label.textContent = '思考中';
+      }, (3 + Math.floor(Math.random() * 4)) * 1000);
       return {
-        thinking: function () { label.textContent = '思考中'; },
-        stop: function () { window.clearInterval(interval); item.remove(); }
+        stop: function () {
+          if (stopped) return;
+          stopped = true;
+          window.clearInterval(interval);
+          window.clearTimeout(transition);
+          item.remove();
+        }
       };
     }
     function cancelPending() {
@@ -334,7 +343,7 @@
               if (!answer && answerText.trim()) { progress.stop(); answer = appendMessage(answerText, 'assistant'); }
               else if (answer) answer.textContent = answerText;
             }
-            if (eventName === 'meta') { sources = data.sources || []; progress.thinking(); }
+            if (eventName === 'meta') sources = data.sources || [];
             if (eventName === 'error') throw new Error(data.message);
             log.scrollTop = log.scrollHeight;
           });
