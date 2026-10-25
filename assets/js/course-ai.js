@@ -229,7 +229,7 @@
         });
         nameBadge.appendChild(logout);
       }
-      if (connection) connection.textContent = '已连接 NAS / DeepSeek';
+      if (connection) connection.textContent = '已连接';
       resetChat();
       try { await loadThreads(true); } catch (error) { errorBox.textContent = '历史对话暂时无法载入：' + error.message; }
     }

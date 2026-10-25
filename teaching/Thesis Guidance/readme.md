@@ -19,7 +19,7 @@ title: 案例论文指导
       <p class="sidebar-label">历史对话</p>
       <div data-thread-list></div>
     </section>
-    <div class="sidebar-footer"><span class="connection-dot"></span><span data-connection-state>正在连接课程服务器</span></div>
+    <div class="sidebar-footer"><span class="connection-dot"></span><span data-connection-state>正在连接</span></div>
   </aside>
   <section class="chat-main">
     <header class="chat-header">
@@ -46,10 +46,10 @@ title: 案例论文指导
         <button class="round-send" type="submit" aria-label="发送">↑</button>
       </form>
       <p class="form-error" data-chat-error role="alert"></p>
-      <p class="composer-note">每平台每小时最多 50 问、每天 150 问；每天最多 10 个文档，单个 500 KB、累计 1500 KB。文档摘录会随问题发送给 DeepSeek，请先移除敏感信息。</p>
+      <p class="composer-note">文档摘录会随问题发送给 DeepSeek，请先移除敏感信息。</p>
     </div>
   </section>
 </main>
 
 <script src="../../assets/js/course-ai-config.js?v=20261025-4"></script>
-<script src="../../assets/js/course-ai.js?v=20261025-unified-chat" defer></script>
+<script src="../../assets/js/course-ai.js?v=20261025-quiet-status" defer></script>
