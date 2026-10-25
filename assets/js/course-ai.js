@@ -256,7 +256,8 @@
     fileInput.addEventListener('change', async function () {
       errorBox.textContent = '';
       for (var file of Array.from(fileInput.files)) {
-        if (file.size > 500 * 1024) { errorBox.textContent = '文件过大，无法处理：单个文件不能超过 500 KB。'; continue; }
+        var uploadLimit = assistantId === 'case_study' ? 1024 * 1024 : 500 * 1024;
+        if (file.size > uploadLimit) { errorBox.textContent = '文件过大，无法处理：单个文件不能超过 ' + (assistantId === 'case_study' ? '1 MB' : '500 KB') + '。'; continue; }
         var item = document.createElement('li'); item.textContent = file.name + ' · 正在处理'; fileList.appendChild(item);
         try {
           var payload = new FormData(); payload.append('file', file);

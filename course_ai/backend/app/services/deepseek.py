@@ -27,12 +27,14 @@ async def stream_answer(question: str, skill: str, evidence: list[Evidence], sys
         yield token
 
 
-async def stream_messages(message_list: list[dict]) -> AsyncIterator[str]:
+async def stream_messages(message_list: list[dict], max_tokens: int = 2048) -> AsyncIterator[str]:
     cfg = load_deepseek_config()
     headers = {"Authorization": f"Bearer {cfg.api_key}", "Content-Type": "application/json"}
-    payload = {"model": cfg.model, "messages": message_list, "stream": True, "max_tokens": 2048}
+    payload = {"model": cfg.model, "messages": message_list, "stream": True,
+               "thinking": {"type": "disabled"}, "max_tokens": max_tokens}
     last_error = None
     for attempt in range(3):
+        emitted = False
         try:
             async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=10)) as client:
                 async with client.stream("POST", f"{cfg.base_url.rstrip('/')}/chat/completions", headers=headers, json=payload) as response:
@@ -43,12 +45,18 @@ async def stream_messages(message_list: list[dict]) -> AsyncIterator[str]:
                         if not line.startswith("data: ") or line == "data: [DONE]":
                             continue
                         data = json.loads(line[6:])
-                        content = data["choices"][0]["delta"].get("content")
+                        choice = data["choices"][0]
+                        if choice.get("finish_reason") == "length":
+                            raise RuntimeError("DeepSeek 输出长度不足，不能将截断内容当成完整审核")
+                        content = choice["delta"].get("content")
                         if content:
+                            emitted = True
                             yield content
                     return
         except (httpx.HTTPError, KeyError, json.JSONDecodeError) as exc:
             last_error = exc
+            if emitted:
+                raise RuntimeError("DeepSeek 响应中断，不能自动拼接重试结果") from exc
             if attempt < 2:
                 await asyncio.sleep(2 ** attempt)
     raise RuntimeError("DeepSeek 暂时不可用") from last_error

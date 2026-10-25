@@ -1,10 +1,13 @@
 """Local API regression tests; no NAS data or DeepSeek calls are used."""
 
 import json
+import io
+import time
 import os
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
@@ -25,12 +28,16 @@ class CourseAISystemTests(unittest.TestCase):
             "SETUP_CODE": "local-test-setup-code",
         })
         from course_ai.backend.app import main
+        from course_ai.backend.app import case_study_routes
+        from course_ai.backend.app.services import case_worker
         cls.main = main
 
-        async def fake_stream(_messages):
+        async def fake_stream(_messages, **_kwargs):
             yield "测试答复"
 
         main.stream_messages = fake_stream
+        case_study_routes.stream_messages = fake_stream
+        case_worker.stream_messages = fake_stream
         cls.client = TestClient(main.app)
         cls.client.__enter__()
 
@@ -168,6 +175,7 @@ class CourseAISystemTests(unittest.TestCase):
         login = self.client.post("/api/auth/login", json=another)
         self.assertEqual(login.status_code, 200)
         token = login.json()["token"]
+        self.__class__.case_token = token
         from course_ai.backend.app.services.student_files import student_dir
         device_file = student_dir("case_study", "2011310411") / "devices.json"
         recorded = json.loads(device_file.read_text(encoding="utf-8"))
@@ -182,6 +190,96 @@ class CourseAISystemTests(unittest.TestCase):
                                           headers={"Authorization": "Bearer " + token}).status_code, 403)
         self.assertEqual(self.client.post("/api/auth/preview", json=self.credentials(
             student_no="2011310411", suffix="000000", assistant="empirical_study")).status_code, 401)
+
+    def test_06_case_paper_checks_bind_to_exact_files(self):
+        from docx import Document
+        from docx.shared import Cm
+        from course_ai.backend.app.services.student_files import student_dir
+
+        def word_bytes(lines):
+            document = Document()
+            section = document.sections[0]
+            section.page_width, section.page_height = Cm(21), Cm(29.7)
+            section.top_margin = section.bottom_margin = Cm(2)
+            section.left_margin = section.right_margin = Cm(2)
+            for line in lines:
+                document.add_paragraph(line)
+            output = io.BytesIO()
+            document.save(output)
+            return output.getvalue()
+
+        paper = word_bytes(["东北财经大学本科毕业论文", "案例研究标题", "摘  要", "关键词：案例  会计",
+                            "ABSTRACT", "Key words: case; accounting", "目  录", "一、引言",
+                            "主要参考文献", "后  记", "指导教师评语"])
+        changed = word_bytes(["东北财经大学本科毕业论文", "另一版本", "摘  要"])
+        evaluation = word_bytes([f"{index} 这是第 {index} 项的学生回复。" for index in range(12, 19)])
+        headers = {"Authorization": "Bearer " + self.case_token}
+        base = "/api/case-study"
+        self.assertEqual(self.client.post(base + "/format-check", files={"file": ("a.docx", paper)}).status_code, 401)
+        premature = self.client.post(base + "/submit", files={
+            "file": ("邓伦2011310411清洁版论文.docx", paper),
+            "self_eval": ("邓伦2011310411自评表.docx", evaluation)}, headers=headers)
+        self.assertEqual(premature.status_code, 409, premature.text)
+        format_result = self.client.post(base + "/format-check", files={"file": ("a.docx", paper)}, headers=headers)
+        self.assertEqual(format_result.status_code, 200, format_result.text)
+        self.assertEqual(len(format_result.json()["items"]), 47)
+        self.assertEqual(format_result.json()["items"][0]["status"], "通过")
+        content_result = self.client.post(base + "/content-check", files={
+            "file": ("a.docx", paper), "self_eval": ("b.docx", evaluation)}, headers=headers)
+        self.assertEqual(content_result.status_code, 200, content_result.text)
+        self.assertEqual(len(content_result.json()["structure"]), 9)
+        altered = self.client.post(base + "/submit", files={
+            "file": ("邓伦2011310411清洁版论文.docx", changed),
+            "self_eval": ("邓伦2011310411自评表.docx", evaluation)}, headers=headers)
+        self.assertEqual(altered.status_code, 409, altered.text)
+        bad_name = self.client.post(base + "/submit", files={
+            "file": ("wrong.docx", paper), "self_eval": ("邓伦2011310411自评表.docx", evaluation)}, headers=headers)
+        self.assertEqual(bad_name.status_code, 400, bad_name.text)
+        submitted = self.client.post(base + "/submit", files={
+            "file": ("邓伦2011310411清洁版论文.docx", paper),
+            "self_eval": ("邓伦2011310411自评表.docx", evaluation)},
+            data={"email": "student@example.com"}, headers=headers)
+        self.assertEqual(submitted.status_code, 200, submitted.text)
+        folder = student_dir("case_study", "2011310411") / "submissions" / submitted.json()["submission_id"]
+        self.assertEqual((folder / "邓伦2011310411清洁版论文.docx").read_bytes(), paper)
+        self.assertEqual(json.loads((folder / "submission.json").read_text())["email"], "student@example.com")
+        for _ in range(40):
+            if (folder / "teacher_review_draft.txt").is_file():
+                break
+            time.sleep(.05)
+        self.assertTrue((folder / "teacher_review_draft.txt").is_file())
+        status = self.client.get(base + "/submissions/" + submitted.json()["submission_id"], headers=headers)
+        self.assertEqual(status.json()["review_status"], "done")
+        self.assertEqual(status.json()["mail_status"], "awaiting_configuration")
+        self.__class__.case_submission_id = submitted.json()["submission_id"]
+
+    def test_07_mail_setup_and_background_draft(self):
+        from course_ai.backend.app.services.mail_drafts import load_mail_config
+        from course_ai.backend.app.services.student_files import student_dir
+
+        payload = {"setup_code": "wrong", "address": "teacher@dufe.edu.cn",
+                   "host": "mail.dufe.edu.cn", "app_password": "test-client-password"}
+        self.assertEqual(self.client.post("/setup/mail", data=payload).status_code, 403)
+        self.assertIsNone(load_mail_config())
+        payload["setup_code"] = "local-test-setup-code"
+        saved_calls = []
+        folder = student_dir("case_study", "2011310411") / "submissions" / self.case_submission_id
+        def fake_append(config, submission_id, subject, recipient, body):
+            saved_calls.append((config.address, submission_id, subject, recipient, len(body)))
+        with patch("course_ai.backend.app.mail_setup_routes.discover_drafts", return_value="Drafts"), \
+                patch("course_ai.backend.app.services.case_worker.append_review_draft", side_effect=fake_append):
+            response = self.client.post("/setup/mail", data=payload)
+            self.assertEqual(response.status_code, 200, response.text)
+            self.assertNotIn("test-client-password", response.text)
+            for _ in range(40):
+                if json.loads((folder / "submission.json").read_text()).get("mail_status") == "saved":
+                    break
+                time.sleep(.05)
+        self.assertTrue(saved_calls)
+        self.assertEqual(saved_calls[0][1], self.case_submission_id)
+        config_path = Path(self.sandbox.name) / "config" / "dufe_mail.json"
+        self.assertEqual(config_path.stat().st_mode & 0o777, 0o600)
+        self.assertEqual(json.loads((folder / "submission.json").read_text())["mail_status"], "saved")
 
 
 if __name__ == "__main__":

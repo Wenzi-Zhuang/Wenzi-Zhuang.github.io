@@ -1598,3 +1598,38 @@ body:has(.thesis-workspace) { background: #f4f7f5; }
   .conversation > .message { max-width: 100%; }
   .chat-composer-wrap { width: calc(100% - 20px); }
 }
+
+/* Case-paper checks live alongside the conversation without shrinking its reading pane. */
+.chat-main.case-mode { grid-template-rows: auto minmax(0, 1fr); }
+.case-workflow { overflow-y: auto; padding: clamp(1.2rem, 3vw, 2.4rem); }
+.case-workflow-inner { max-width: 980px; margin: 0 auto; padding-bottom: 4rem; }
+.case-step-label { margin: 0 0 .35rem; color: var(--course-accent); font-size: .7rem; font-weight: 750; letter-spacing: .09em; }
+.case-workflow h2 { margin: 0; font-family: var(--site-serif); font-size: clamp(1.6rem, 3vw, 2.15rem); }
+.case-workflow-lead { max-width: 780px; margin: .7rem 0 1.6rem; color: var(--course-muted); font-size: .87rem; line-height: 1.75; }
+.case-file-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.case-file-grid label { display: grid; gap: .45rem; min-width: 0; padding: 1rem; color: #37483f; font-size: .76rem; font-weight: 700; background: #f9fbf9; border: 1px solid var(--course-line); border-radius: 10px; }
+.case-file-grid input { box-sizing: border-box; width: 100%; min-width: 0; padding: .55rem; color: var(--course-ink); font: inherit; font-weight: 400; background: #fff; border: 1px solid #d8e2da; border-radius: 6px; }
+.case-file-note, .case-submit-note { color: var(--course-muted); font-size: .75rem; line-height: 1.65; }
+.case-file-note { margin: .75rem 0 0; }
+.case-panel { margin-top: 1.5rem; padding-top: 1.4rem; border-top: 1px solid var(--course-line); }
+.case-primary { min-height: 43px; padding: .65rem 1rem; color: #fff; font-size: .82rem; font-weight: 700; background: var(--course-accent); border: 0; border-radius: 8px; cursor: pointer; }
+.case-primary:hover { background: var(--course-accent-strong); }
+.case-primary:disabled { opacity: .55; cursor: wait; }
+.case-result { margin-top: 1.5rem; }
+.case-result h3 { margin: 1.5rem 0 .6rem; font-size: .94rem; }
+.case-result h3:first-child { margin-top: 0; }
+.case-summary { color: #345744; font-size: .85rem; font-weight: 650; }
+.case-caution { color: #72643f; font-size: .76rem; line-height: 1.7; }
+.case-error { color: #a33b32; font-size: .82rem; line-height: 1.6; }
+.case-working { color: var(--course-accent); font-size: .82rem; }
+.case-check-list { display: grid; gap: .45rem; padding: 0; list-style: none; counter-reset: none; }
+.case-check-list li { padding: .8rem .9rem; background: #fcfdfc; border: 1px solid #e1e8e3; border-radius: 8px; }
+.case-check-list li > div { display: flex; align-items: start; justify-content: space-between; gap: .7rem; font-size: .78rem; font-weight: 650; line-height: 1.5; }
+.case-check-list li p { margin: .3rem 0 0; color: var(--course-muted); font-size: .72rem; line-height: 1.55; }
+.case-status { flex: 0 0 auto; padding: .1rem .4rem; font-size: .66rem; border-radius: 99px; }
+.case-status-通过 { color: #266146; background: #e5f1e8; }
+.case-status-需修改 { color: #a33b32; background: #f9e9e7; }
+.case-status-复核 { color: #876b31; background: #f7f1e1; }
+.case-structure-list { display: grid; gap: .3rem; padding-left: 1.3rem; color: #4b5b51; font-size: .78rem; line-height: 1.6; }
+.case-review-text { padding: 1.1rem 1.2rem; color: #26352c; font-size: .83rem; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; background: #f9fbf9; border: 1px solid var(--course-line); border-radius: 10px; }
+@media (max-width: 720px) { .case-file-grid { grid-template-columns: 1fr; } .case-workflow { padding: 1rem; } }

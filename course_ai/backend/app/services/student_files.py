@@ -149,3 +149,86 @@ def save_thread(assistant_id: str, student_no: str, thread_id: str, title: str, 
             "updated_at": now, "messages": messages}
     _write_json(path, data)
     return data
+
+
+def case_check_path(student_no: str, paper_hash: str) -> Path:
+    if not re.fullmatch(r"[a-f0-9]{64}", paper_hash):
+        raise ValueError("文档摘要无效")
+    folder = student_dir("case_study", student_no) / "checks"
+    folder.mkdir(mode=0o700, exist_ok=True)
+    if folder.is_symlink():
+        raise ValueError("检查目录不能是符号链接")
+    folder.chmod(0o700)
+    return folder / f"{paper_hash}.json"
+
+
+def read_case_check(student_no: str, paper_hash: str) -> dict:
+    path = case_check_path(student_no, paper_hash)
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_SAVED_FILE:
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+def save_case_check(student_no: str, paper_hash: str, data: dict) -> None:
+    _write_json(case_check_path(student_no, paper_hash), data)
+
+
+def save_case_submission(student_no: str, files: dict[str, bytes], metadata: dict, review_draft: str = "") -> str:
+    """Store a completed submission privately; only this path retains Word bytes."""
+    base = student_dir("case_study", student_no) / "submissions"
+    base.mkdir(mode=0o700, exist_ok=True)
+    if base.is_symlink():
+        raise ValueError("提交目录不能是符号链接")
+    base.chmod(0o700)
+    submission_id = uuid.uuid4().hex
+    folder = base / submission_id
+    folder.mkdir(mode=0o700)
+    for filename, content in files.items():
+        if Path(filename).name != filename or filename.startswith(".") or (folder / filename).exists():
+            raise ValueError("提交文件名不安全或重复")
+        with (folder / filename).open("xb") as handle:
+            handle.write(content)
+        (folder / filename).chmod(0o600)
+    _write_json(folder / "submission.json", metadata)
+    if review_draft:
+        write_case_draft(folder, review_draft)
+    return submission_id
+
+
+def write_case_draft(folder: Path, review_draft: str) -> None:
+    if len(review_draft.encode("utf-8")) > MAX_SAVED_FILE:
+        raise ValueError("审核草稿超过 200 KB")
+    path = folder / "teacher_review_draft.txt"
+    if path.is_symlink():
+        raise ValueError("审核草稿不能是符号链接")
+    temporary = folder / (".review_" + uuid.uuid4().hex + ".tmp")
+    try:
+        with temporary.open("x", encoding="utf-8") as handle:
+            handle.write(review_draft)
+        temporary.chmod(0o600)
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def case_submission_folder(student_no: str, submission_id: str) -> Path:
+    if not re.fullmatch(r"[a-f0-9]{32}", submission_id):
+        raise ValueError("提交编号无效")
+    path = student_dir("case_study", student_no) / "submissions" / submission_id
+    if path.is_symlink() or not path.is_dir():
+        raise ValueError("提交记录不存在")
+    return path
+
+
+def read_case_submission(student_no: str, submission_id: str) -> dict:
+    path = case_submission_folder(student_no, submission_id) / "submission.json"
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > MAX_SAVED_FILE:
+        raise ValueError("提交记录无效")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def update_case_submission(student_no: str, submission_id: str, metadata: dict) -> None:
+    _write_json(case_submission_folder(student_no, submission_id) / "submission.json", metadata)

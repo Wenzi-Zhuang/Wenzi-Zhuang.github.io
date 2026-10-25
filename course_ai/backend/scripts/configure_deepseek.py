@@ -27,7 +27,7 @@ def main() -> None:
     if not key or key == "CHANGE_ME":
         raise SystemExit("未输入有效 API Key，配置未更改。")
     base_url = input("DeepSeek Base URL [https://api.deepseek.com]: ").strip() or "https://api.deepseek.com"
-    model = input("模型 [deepseek-chat]: ").strip() or "deepseek-chat"
+    model = input("模型 [deepseek-flash]: ").strip() or "deepseek-flash"
     update_env(Path(args.env), {
         "DEEPSEEK_API_KEY": key,
         "DEEPSEEK_BASE_URL": base_url,

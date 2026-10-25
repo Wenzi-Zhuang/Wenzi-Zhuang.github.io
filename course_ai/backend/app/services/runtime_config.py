@@ -20,14 +20,18 @@ def load_deepseek_config() -> DeepSeekRuntimeConfig:
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
             if data.get("api_key"):
+                model = data.get("model") or settings.deepseek_model
+                if model == "deepseek-chat":
+                    model = "deepseek-flash"
                 return DeepSeekRuntimeConfig(
                     api_key=data["api_key"],
                     base_url=data.get("base_url") or settings.deepseek_base_url,
-                    model=data.get("model") or settings.deepseek_model,
+                    model=model,
                 )
         except (OSError, ValueError, TypeError):
             pass
-    return DeepSeekRuntimeConfig(settings.deepseek_api_key, settings.deepseek_base_url, settings.deepseek_model)
+    model = "deepseek-flash" if settings.deepseek_model == "deepseek-chat" else settings.deepseek_model
+    return DeepSeekRuntimeConfig(settings.deepseek_api_key, settings.deepseek_base_url, model)
 
 
 def save_deepseek_config(api_key: str, base_url: str, model: str) -> None:

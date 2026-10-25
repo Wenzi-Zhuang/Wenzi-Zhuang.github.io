@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     database_url: str
     deepseek_api_key: str
     deepseek_base_url: str = "https://api.deepseek.com"
-    deepseek_model: str = "deepseek-chat"
+    deepseek_model: str = "deepseek-flash"
     device_token_secret: str
     frontend_origin: str
     public_api_base: str
