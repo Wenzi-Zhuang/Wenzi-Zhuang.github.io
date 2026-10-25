@@ -52,4 +52,4 @@ title: 实证论文指导
 </main>
 
 <script src="../../assets/js/course-ai-config.js?v=20261025-4"></script>
-<script src="../../assets/js/course-ai.js?v=20261025-stage-timing" defer></script>
+<script src="../../assets/js/course-ai.js?v=20261025-course-auth" defer></script>

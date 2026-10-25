@@ -14,10 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .config import get_settings
 from .database import Base, engine, get_db
-from .auth import current_student
+from .auth import CourseSession, current_session
 from .auth_routes import allowed, router as auth_router
 from .thread_routes import router as thread_router
-from .models import Student
 from .services.deepseek import stream_messages
 from .services.assistant_context import ASSISTANTS, build_system_messages, ensure_library_structure, load_assistant_context
 from .services.runtime_config import load_deepseek_config, save_deepseek_config
@@ -110,9 +109,10 @@ async def deepseek_setup_save(
 
 @app.post("/api/assistants/{assistant_id}/chat/stream")
 async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody,
-                                student: Student = Depends(current_student)):
+                                session: CourseSession = Depends(current_session)):
     if assistant_id not in ASSISTANTS:
         raise HTTPException(404, "AI 助手不存在")
+    student = session.student_for(assistant_id)
     allowed(assistant_id, student.student_no)
     if sum(len(item.content) for item in body.messages) > 16000:
         raise HTTPException(413, "本次对话内容过长，请开始新对话或精简要求")
@@ -140,7 +140,8 @@ async def assistant_chat_stream(assistant_id: str, body: AssistantChatBody,
 
 @app.post("/api/assistants/{assistant_id}/files")
 async def assistant_file(assistant_id: str, file: UploadFile = File(...),
-                         student: Student = Depends(current_student)):
+                         session: CourseSession = Depends(current_session)):
+    student = session.student_for(assistant_id)
     allowed(assistant_id, student.student_no)
     check_hourly_limit(upload_request_times, 300)
     attempts = student_upload_attempts[student.student_no]

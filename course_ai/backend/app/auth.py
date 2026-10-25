@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import secrets
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 
 from argon2 import PasswordHasher
@@ -11,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from .config import get_settings
 from .database import get_db
-from .models import Device, Student
+from .models import CourseDevice, Student
 
 ph = PasswordHasher()
 
@@ -27,18 +28,30 @@ def verify_password(password_hash: str, password: str) -> bool:
         return False
 
 
-async def current_student(
+@dataclass
+class CourseSession:
+    student: Student
+    device: CourseDevice
+    assistant_id: str
+
+    def student_for(self, assistant_id: str) -> Student:
+        if self.assistant_id != assistant_id:
+            raise HTTPException(403, "请先在本课程注册并登录")
+        return self.student
+
+
+async def current_session(
     authorization: str | None = Header(default=None), db: AsyncSession = Depends(get_db)
-) -> Student:
+) -> CourseSession:
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(401, "需要设备验证")
     digest = token_hash(authorization[7:])
     now = datetime.now(timezone.utc)
     result = await db.execute(
-        select(Device, Student).join(Student).where(
-            Device.token_hash == digest,
-            Device.revoked_at.is_(None),
-            Device.expires_at > now,
+        select(CourseDevice, Student).join(Student).where(
+            CourseDevice.token_hash == digest,
+            CourseDevice.revoked_at.is_(None),
+            CourseDevice.expires_at > now,
             Student.status == "active",
         )
     )
@@ -48,7 +61,7 @@ async def current_student(
     device, student = row
     device.last_seen_at = now
     await db.commit()
-    return student
+    return CourseSession(student=student, device=device, assistant_id=device.assistant_id)
 
 
 def issue_token() -> tuple[str, str, datetime]:

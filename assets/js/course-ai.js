@@ -2,8 +2,9 @@
   document.querySelectorAll('[data-course-ai]').forEach(function (app) {
     var apiBase = String(window.COURSE_AI_API_BASE || '').replace(/\/$/, '');
     var assistantId = app.dataset.assistantId;
-    var tokenKey = 'course-ai-device-token';
+    var tokenKey = 'course-ai-device-token:' + assistantId;
     var token = localStorage.getItem(tokenKey) || '';
+    localStorage.removeItem('course-ai-device-token');
     var form = app.querySelector('[data-chat-form]');
     var input = app.querySelector('[data-chat-input]');
     var log = app.querySelector('[data-chat-log]');
@@ -23,8 +24,8 @@
 
     var gate = document.createElement('div');
     gate.className = 'auth-gate';
-    gate.innerHTML = '<section class="auth-card"><a href="/teaching.html">← 返回教学</a><p class="auth-eyebrow">课程 AI 平台</p><h2></h2><p class="auth-description">请先注册或登录；已登录的浏览器设备下次会自动进入。</p>' +
-      '<form data-login-form><label>学号 / 教师账号<input name="student_no" autocomplete="username" required></label><label>身份证后六位 / 教师口令<input name="id_last6" type="password" autocomplete="current-password" required></label><button type="submit">登录</button><button type="button" class="auth-link" data-show-register>首次使用？注册</button></form>' +
+    gate.innerHTML = '<section class="auth-card"><a href="/teaching.html">← 返回教学</a><p class="auth-eyebrow">课程 AI 平台</p><h2></h2><p class="auth-description">每门课程需分别注册和登录；此浏览器再次进入本课程时会自动登录。</p>' +
+      '<form data-login-form><label>学号 / 账号<input name="student_no" autocomplete="username" required></label><label>身份证后六位 / 口令<input name="id_last6" type="password" autocomplete="current-password" required></label><button type="submit">登录</button><button type="button" class="auth-link" data-show-register>首次进入本课程？注册</button></form>' +
       '<form data-register-form hidden><label>学号<input name="student_no" inputmode="numeric" pattern="[0-9]{5,20}" required></label><label>身份证后六位<input name="id_last6" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required></label><button type="submit">核对信息</button><button type="button" class="auth-link" data-show-login>返回登录</button></form>' +
       '<div data-register-confirm hidden><h3>请核对注册信息</h3><dl><dt>学号</dt><dd data-confirm-no></dd><dt>姓名</dt><dd data-confirm-name></dd><dt>班级</dt><dd data-confirm-class></dd><dt>身份证后六位</dt><dd data-confirm-last6></dd></dl><button type="button" data-confirm-register>确认注册</button><button type="button" class="auth-link" data-back-register>返回修改</button></div>' +
       '<p class="form-error" data-auth-error role="alert"></p></section>';
@@ -87,7 +88,7 @@
         loginForm.elements.id_last6.value = '';
         preview = null;
         showGate('login');
-        authError.textContent = '注册成功，请登录。';
+        authError.textContent = '本课程注册成功，请登录。';
       } catch (error) { authError.textContent = error.message; }
     });
     loginForm.addEventListener('submit', async function (event) {

@@ -3,9 +3,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
-from .auth import current_student
+from .auth import CourseSession, current_session
 from .auth_routes import allowed
-from .models import Student
 from .services.student_files import list_threads, read_thread, save_thread
 
 router = APIRouter()
@@ -22,13 +21,15 @@ class ThreadBody(BaseModel):
 
 
 @router.get("/api/assistants/{assistant_id}/threads")
-async def threads(assistant_id: str, student: Student = Depends(current_student)):
+async def threads(assistant_id: str, session: CourseSession = Depends(current_session)):
+    student = session.student_for(assistant_id)
     allowed(assistant_id, student.student_no)
     return {"threads": list_threads(assistant_id, student.student_no)}
 
 
 @router.get("/api/assistants/{assistant_id}/threads/{thread_id}")
-async def thread(assistant_id: str, thread_id: str, student: Student = Depends(current_student)):
+async def thread(assistant_id: str, thread_id: str, session: CourseSession = Depends(current_session)):
+    student = session.student_for(assistant_id)
     allowed(assistant_id, student.student_no)
     try:
         data = read_thread(assistant_id, student.student_no, thread_id)
@@ -41,7 +42,8 @@ async def thread(assistant_id: str, thread_id: str, student: Student = Depends(c
 
 @router.put("/api/assistants/{assistant_id}/threads/{thread_id}")
 async def put_thread(assistant_id: str, thread_id: str, body: ThreadBody,
-                     student: Student = Depends(current_student)):
+                     session: CourseSession = Depends(current_session)):
+    student = session.student_for(assistant_id)
     allowed(assistant_id, student.student_no)
     try:
         if not read_thread(assistant_id, student.student_no, thread_id) and len(list_threads(assistant_id, student.student_no)) >= 50:
