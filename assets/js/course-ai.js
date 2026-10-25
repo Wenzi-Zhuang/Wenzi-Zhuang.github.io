@@ -225,7 +225,6 @@
         logout.addEventListener('click', async function () {
           try { await requestJSON('/api/auth/logout', {method: 'POST', headers: authHeaders()}); } catch (_) {}
           token = ''; user = null; localStorage.removeItem(tokenKey);
-          var adminPanel = app.querySelector('[data-roster-admin]'); if (adminPanel) adminPanel.remove();
           resetChat(); showGate('login');
         });
         nameBadge.appendChild(logout);
@@ -233,37 +232,6 @@
       if (connection) connection.textContent = '已连接 NAS / DeepSeek';
       resetChat();
       try { await loadThreads(true); } catch (error) { errorBox.textContent = '历史对话暂时无法载入：' + error.message; }
-      if (profile.is_admin) setupAdmin();
-      else {
-        var adminPanel = app.querySelector('[data-roster-admin]'); if (adminPanel) adminPanel.remove();
-      }
-    }
-
-    function setupAdmin() {
-      if (app.querySelector('[data-roster-admin]')) return;
-      var panel = document.createElement('section');
-      panel.className = 'roster-admin'; panel.dataset.rosterAdmin = '';
-      panel.innerHTML = '<h2>本平台学生名单</h2><p data-roster-list></p><form data-roster-form><label>学号<input name="student_no" inputmode="numeric" required></label><label>姓名<input name="name" required></label><label>班级<input name="class_name" required></label><button type="submit">添加 / 更新</button></form><p class="form-error" data-roster-error></p>';
-      app.querySelector('.chat-sidebar').insertBefore(panel, app.querySelector('.sidebar-footer'));
-      async function refreshRoster() {
-        var data = await requestJSON('/api/admin/roster?assistant_id=' + encodeURIComponent(assistantId), {headers: authHeaders()});
-        panel.querySelector('[data-roster-list]').textContent = data.students.map(function (row) {
-          return row.student_no + ' · ' + row.name + ' · ' + row.class_name;
-        }).join('\n') || '暂无学生';
-      }
-      panel.querySelector('[data-roster-form]').addEventListener('submit', async function (event) {
-        event.preventDefault();
-        var fields = new FormData(event.currentTarget);
-        try {
-          await requestJSON('/api/admin/roster', jsonOptions('POST', {
-            assistant_id: assistantId, student_no: String(fields.get('student_no')).trim(),
-            name: String(fields.get('name')).trim(), class_name: String(fields.get('class_name')).trim()
-          }, true));
-          event.currentTarget.reset(); await refreshRoster();
-          panel.querySelector('[data-roster-error]').textContent = '已保存';
-        } catch (error) { panel.querySelector('[data-roster-error]').textContent = error.message; }
-      });
-      refreshRoster().catch(function (error) { panel.querySelector('[data-roster-error]').textContent = error.message; });
     }
 
     app.querySelector('[data-new-chat]').addEventListener('click', resetChat);

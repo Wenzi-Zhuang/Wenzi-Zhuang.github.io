@@ -2,7 +2,7 @@
 title: 案例论文指导
 ---
 
-<link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261025-live-status">
+<link rel="stylesheet" href="../../assets/css/course-ai.css?v=20261025-unified-chat">
 
 <main class="chat-workspace" data-course-ai data-course-name="案例论文" data-assistant-id="case_study">
   <aside class="chat-sidebar">
@@ -52,4 +52,4 @@ title: 案例论文指导
 </main>
 
 <script src="../../assets/js/course-ai-config.js?v=20261025-4"></script>
-<script src="../../assets/js/course-ai.js?v=20261025-course-auth" defer></script>
+<script src="../../assets/js/course-ai.js?v=20261025-unified-chat" defer></script>

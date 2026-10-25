@@ -1559,11 +1559,11 @@ body:has(.thesis-workspace) { background: #f4f7f5; }
 .auth-card h2 { margin: 0; font-family: var(--site-serif); font-size: 1.65rem; }
 .auth-description { margin: .6rem 0 1.4rem; color: var(--course-muted); font-size: .8rem; line-height: 1.6; }
 .auth-card form { display: grid; gap: .9rem; }
-.auth-card label, .roster-admin label { display: grid; gap: .35rem; color: #4e5c53; font-size: .76rem; font-weight: 650; }
-.auth-card input, .roster-admin input { width: 100%; min-height: 44px; padding: .65rem .75rem; color: var(--course-ink); border: 1px solid #c9d7ce; border-radius: 8px; background: #fff; }
-.auth-card button:not(.auth-link), .roster-admin button { min-height: 44px; padding: .65rem; color: #fff; font-weight: 700; background: var(--course-accent); border: 0; border-radius: 8px; cursor: pointer; }
+.auth-card label { display: grid; gap: .35rem; color: #4e5c53; font-size: .76rem; font-weight: 650; }
+.auth-card input { width: 100%; min-height: 44px; padding: .65rem .75rem; color: var(--course-ink); border: 1px solid #c9d7ce; border-radius: 8px; background: #fff; }
+.auth-card button:not(.auth-link) { min-height: 44px; padding: .65rem; color: #fff; font-weight: 700; background: var(--course-accent); border: 0; border-radius: 8px; cursor: pointer; }
 .auth-card .auth-link { min-height: 38px; color: var(--course-accent); background: none; border: 0; cursor: pointer; }
-.auth-card .form-error, .chat-composer-wrap .form-error, .roster-admin .form-error { min-height: 1.25em; margin: .5rem 0 0; color: #a33b32; font-size: .76rem; line-height: 1.45; }
+.auth-card .form-error, .chat-composer-wrap .form-error { min-height: 1.25em; margin: .5rem 0 0; color: #a33b32; font-size: .76rem; line-height: 1.45; }
 .auth-card h3 { margin: 0 0 1rem; font-size: 1.06rem; }
 .auth-card dl { display: grid; grid-template-columns: 7rem 1fr; gap: .6rem .2rem; margin: 0 0 1.4rem; font-size: .84rem; }
 .auth-card dt { color: var(--course-muted); }
@@ -1589,12 +1589,6 @@ body:has(.thesis-workspace) { background: #f4f7f5; }
 .history-item { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .user-badge { display: flex; align-items: center; gap: .65rem; color: var(--course-accent-strong); font-size: .82rem; font-weight: 700; }
 .user-badge button { padding: .3rem .55rem; color: var(--course-muted); font-size: .7rem; background: #f2f5f2; border: 1px solid var(--course-line); border-radius: 6px; cursor: pointer; }
-.roster-admin { margin-top: 1rem; padding: .9rem .45rem; border-top: 1px solid var(--course-line); }
-.roster-admin h2 { margin: 0 0 .55rem; font-size: .82rem; }
-.roster-admin [data-roster-list] { max-height: 120px; overflow-y: auto; white-space: pre-line; color: var(--course-muted); font-size: .7rem; line-height: 1.5; }
-.roster-admin form { display: grid; gap: .55rem; }
-.roster-admin input { min-height: 35px; padding: .4rem .5rem; }
-
 @media (max-width: 720px) {
   .chat-workspace { grid-template-columns: 1fr; }
   .chat-sidebar { max-height: 39vh; }
