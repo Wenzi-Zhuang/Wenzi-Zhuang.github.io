@@ -39,6 +39,8 @@
 
     function showGate(view) {
       app.classList.remove('authenticated');
+      app.dataset.courseAiAdmin = 'false';
+      app.dispatchEvent(new CustomEvent('course-ai-profile', {detail: {isAdmin: false}}));
       gate.hidden = false;
       loginForm.hidden = view !== 'login';
       registerForm.hidden = view !== 'register';
@@ -218,6 +220,8 @@
       user = profile;
       gate.hidden = true;
       app.classList.add('authenticated');
+      app.dataset.courseAiAdmin = profile.is_admin ? 'true' : 'false';
+      app.dispatchEvent(new CustomEvent('course-ai-profile', {detail: {isAdmin: !!profile.is_admin}}));
       nameBadge.textContent = profile.name;
       var logout = nameBadge.querySelector('button');
       if (!logout) {

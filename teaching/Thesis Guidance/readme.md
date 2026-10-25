@@ -17,6 +17,7 @@ title: 案例论文指导
       <button class="feature-button" type="button" data-feature="格式检查" data-case-tab="format">格式检查</button>
       <button class="feature-button" type="button" data-feature="内容检查" data-case-tab="content">内容检查</button>
       <button class="feature-button" type="button" data-feature="论文提交" data-case-tab="submit">论文提交</button>
+      <button class="feature-button" type="button" data-feature="初稿试审" data-case-tab="initial" data-case-teacher-tab hidden>初稿试审（教师）</button>
     </nav>
     <section class="chat-history" aria-label="历史对话">
       <p class="sidebar-label">历史对话</p>
@@ -43,14 +44,14 @@ title: 案例论文指导
     </div>
     <div class="case-workflow" data-case-workflow hidden>
       <div class="case-workflow-inner">
-        <p class="case-step-label">案例论文 · 本科毕业论文</p>
+        <p class="case-step-label" data-case-step-label>案例论文 · 本科毕业论文</p>
         <h2 data-case-title>格式检查</h2>
         <p class="case-workflow-lead" data-case-description>依据本科毕业论文写作规范第三部分，逐项检查 Word 文档。不能由程序可靠确认的版面项目会标注“复核”，不会被算作通过。</p>
-        <div class="case-file-grid">
+        <div class="case-file-grid" data-case-common-files>
           <label>清洁版论文 Word（必选）<input type="file" accept=".docx" data-case-paper></label>
           <label>案例类毕业论文自评表（内容检查和提交必选）<input type="file" accept=".docx" data-case-evaluation></label>
         </div>
-        <p class="case-file-note">文件只在正式提交后保存在 NAS。请选择 Word .docx 文档；如文件超过处理上限，系统会给出提示。</p>
+        <p class="case-file-note" data-case-common-note>文件只在正式提交后保存在 NAS。请选择 Word .docx 文档；如文件超过处理上限，系统会给出提示。</p>
         <section class="case-panel" data-case-panel="format">
           <button type="button" class="case-primary" data-case-action="format">开始逐项格式检查</button>
           <div class="case-result" data-case-result="format" aria-live="polite"></div>
@@ -70,6 +71,14 @@ title: 案例论文指导
           <button type="button" class="case-primary" data-case-action="submit">校验并提交论文</button>
           <div class="case-result" data-case-result="submit" aria-live="polite"></div>
         </section>
+        <section class="case-panel" data-case-panel="initial" hidden>
+          <p class="case-submit-note">仅教师可用：初稿无需自评表，不进入学生正式提交流程。文件保存在 NAS，NAS 后台调用 DeepSeek 生成初步意见，并保存为 DUFE 草稿；收件人留空，不发送。</p>
+          <div class="case-file-grid">
+            <label>研究设计初稿 Word（必选）<input type="file" accept=".docx" data-case-teacher-paper></label>
+          </div>
+          <button type="button" class="case-primary" data-case-action="initial">提交 NAS 自动草稿测试</button>
+          <div class="case-result" data-case-result="initial" aria-live="polite"></div>
+        </section>
       </div>
     </div>
     <div class="chat-composer-wrap">
@@ -86,5 +95,5 @@ title: 案例论文指导
 </main>
 
 <script src="../../assets/js/course-ai-config.js?v=20261025-4"></script>
-<script src="../../assets/js/course-ai.js?v=20261025-quiet-status" defer></script>
-<script src="../../assets/js/case-study-workflow.js?v=20261025-1" defer></script>
+<script src="../../assets/js/course-ai.js?v=20261025-teacher-draft" defer></script>
+<script src="../../assets/js/case-study-workflow.js?v=20261025-teacher-draft" defer></script>

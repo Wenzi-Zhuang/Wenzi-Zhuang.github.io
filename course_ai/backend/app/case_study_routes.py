@@ -13,6 +13,7 @@ from .services.case_study_review import (
     TOPIC_CRITERIA, inspect_format, read_word, structure_report,
 )
 from .services.deepseek import stream_messages
+from .services.mail_drafts import load_mail_config
 from .services.student_files import read_case_check, read_case_submission, save_case_check, save_case_submission
 from .services.usage import consume_quota
 
@@ -77,6 +78,41 @@ def filename_ok(filename: str, name: str, student_no: str, kind: str) -> bool:
     stem = filename[:-5] if filename.lower().endswith(".docx") else ""
     pattern = re.escape(name) + r"[+_\s-]*" + re.escape(student_no) + r"[+_\s-]*" + re.escape(kind)
     return bool(re.fullmatch(pattern, stem))
+
+
+@router.post("/teacher-initial-draft")
+async def teacher_initial_draft(
+    file: UploadFile = File(...), session: CourseSession = Depends(current_session),
+):
+    """Queue a teacher-only draft test without changing formal student submission rules."""
+    student_no, _ = identity(session)
+    if student_no != "admin":
+        raise HTTPException(403, "仅教师账号可使用初稿试审")
+    if load_mail_config() is None:
+        raise HTTPException(503, "教师邮箱草稿连接尚未配置")
+    filename = file.filename or ""
+    if len(filename) > 180 or not re.fullmatch(r"[^/\\]+\.docx", filename, re.I) or filename.startswith("."):
+        raise HTTPException(400, "请选择文件名安全的 Word .docx 初稿")
+    content, paper = await read_file(file, student_no)
+    require_full_text(paper.text, MAX_PAPER_CHARS)
+    await consume_quota(student_no, "case_study", "question")
+    metadata = {
+        "workflow": "teacher_initial_draft_test", "student_no": "admin", "name": "教师",
+        "email": None, "submitted_at": datetime.now(timezone.utc).isoformat(),
+        "paper_sha256": paper.sha256,
+        "files": [{"filename": filename, "kind": "初稿", "sha256": paper.sha256, "bytes": len(content)}],
+        "review_status": "pending", "review_attempts": 0,
+        "mail_status": "pending", "mail_attempts": 0,
+    }
+    try:
+        submission_id = save_case_submission("admin", {filename: content}, metadata)
+    except (OSError, ValueError) as exc:
+        raise HTTPException(500, "NAS 保存测试初稿失败，请稍后重试") from exc
+    from .services.case_worker import wake_case_worker
+    wake_case_worker()
+    return {"submission_id": submission_id,
+            "message": "初稿测试任务已保存到 NAS；AI 初审和 DUFE 草稿将由 NAS 自动完成，不会发送邮件。",
+            "review_status": "pending", "mail_status": "pending"}
 
 
 @router.post("/format-check")

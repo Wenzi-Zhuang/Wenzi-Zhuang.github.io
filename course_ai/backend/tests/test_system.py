@@ -281,6 +281,46 @@ class CourseAISystemTests(unittest.TestCase):
         self.assertEqual(config_path.stat().st_mode & 0o777, 0o600)
         self.assertEqual(json.loads((folder / "submission.json").read_text())["mail_status"], "saved")
 
+    def test_08_teacher_initial_draft_uses_nas_worker_without_self_eval(self):
+        from docx import Document
+        from course_ai.backend.app.services.student_files import student_dir
+
+        document = Document()
+        document.add_paragraph("研究方法与论文写作课程研究设计初稿")
+        document.add_paragraph("数字化转型可能通过内部控制影响会计信息质量。")
+        output = io.BytesIO()
+        document.save(output)
+        paper = output.getvalue()
+        url = "/api/case-study/teacher-initial-draft"
+        self.assertEqual(self.client.post(url, files={"file": ("初稿.docx", paper)}).status_code, 401)
+        self.assertEqual(self.client.post(url, files={"file": ("初稿.docx", paper)},
+                                          headers={"Authorization": "Bearer " + self.case_token}).status_code, 403)
+        teacher = self.client.post("/api/auth/login", json=self.credentials(
+            student_no="admin", suffix="new", assistant="case_study"))
+        self.assertEqual(teacher.status_code, 200, teacher.text)
+        headers = {"Authorization": "Bearer " + teacher.json()["token"]}
+        calls = []
+        def fake_append(config, submission_id, subject, recipient, body):
+            calls.append((submission_id, subject, recipient, body))
+        with patch("course_ai.backend.app.services.case_worker.append_review_draft", side_effect=fake_append):
+            response = self.client.post(url, files={"file": ("研究设计初稿.docx", paper)}, headers=headers)
+            self.assertEqual(response.status_code, 200, response.text)
+            submission_id = response.json()["submission_id"]
+            folder = student_dir("case_study", "admin") / "submissions" / submission_id
+            for _ in range(40):
+                if json.loads((folder / "submission.json").read_text()).get("mail_status") == "saved":
+                    break
+                time.sleep(.05)
+        self.assertEqual((folder / "研究设计初稿.docx").read_bytes(), paper)
+        self.assertEqual(json.loads((folder / "submission.json").read_text())["workflow"],
+                         "teacher_initial_draft_test")
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(calls[0][1].startswith("【NAS自动测试｜初稿意见】"))
+        self.assertIsNone(calls[0][2])
+        self.assertIn("测试答复", calls[0][3])
+        self.assertEqual(self.client.get("/api/case-study/submissions/" + submission_id,
+                                         headers=headers).json()["mail_status"], "saved")
+
 
 if __name__ == "__main__":
     unittest.main()
