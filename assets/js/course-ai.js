@@ -111,7 +111,10 @@
     function appendMessage(text, role) {
       var item = document.createElement('div');
       item.className = 'message message-' + role;
-      item.textContent = text;
+      if (role === 'assistant' && window.CourseAiMarkdown) {
+        item.classList.add('rich-text');
+        window.CourseAiMarkdown.renderInto(item, text);
+      } else item.textContent = text;
       log.appendChild(item);
       log.scrollTop = log.scrollHeight;
       return item;
@@ -302,7 +305,16 @@
         }
         if (!response.body) throw new Error('暂时无法接收回答，请稍后再试');
         var reader = response.body.getReader(), decoder = new TextDecoder(), buffer = '', sources = [];
-        var answerText = '';
+        var answerText = '', renderFrame = 0;
+        function renderAnswer() {
+          if (renderFrame || !answer) return;
+          renderFrame = window.requestAnimationFrame(function () {
+            renderFrame = 0;
+            if (answer && window.CourseAiMarkdown) window.CourseAiMarkdown.renderInto(answer, answerText);
+            else if (answer) answer.textContent = answerText;
+            log.scrollTop = log.scrollHeight;
+          });
+        }
         while (true) {
           var chunk = await reader.read(); if (chunk.done) break;
           if (request.cancelled) return;
@@ -315,15 +327,18 @@
             if (eventName === 'token') {
               answerText += data.text || '';
               if (!answer && answerText.trim()) { progress.stop(); answer = appendMessage(answerText, 'assistant'); }
-              else if (answer) answer.textContent = answerText;
+              else if (answer) renderAnswer();
             }
             if (eventName === 'meta') sources = data.sources || [];
             if (eventName === 'error') throw new Error(data.message);
             log.scrollTop = log.scrollHeight;
           });
         }
-        if (!answer || !answer.textContent.trim()) throw new Error('AI 未返回回答，请稍后重试');
-        messages.push({role: 'user', content: visibleQuestion}, {role: 'assistant', content: answer.textContent});
+        if (!answer || !answerText.trim()) throw new Error('AI 未返回回答，请稍后重试');
+        if (renderFrame) window.cancelAnimationFrame(renderFrame);
+        if (window.CourseAiMarkdown) window.CourseAiMarkdown.renderInto(answer, answerText);
+        else answer.textContent = answerText;
+        messages.push({role: 'user', content: visibleQuestion}, {role: 'assistant', content: answerText});
         attachments = []; fileList.innerHTML = '';
         if (sources.length) {
           var sourceBox = document.createElement('div'); sourceBox.className = 'source-list';
@@ -333,10 +348,12 @@
       } catch (error) {
         if (request.cancelled) return;
         progress.stop();
-        if (answer) answer.textContent = '回答中断：' + (error.message || '暂时无法回答');
+        if (renderFrame) window.cancelAnimationFrame(renderFrame);
+        if (answer) { answer.classList.remove('rich-text'); answer.textContent = '回答中断：' + (error.message || '暂时无法回答'); }
         else appendMessage(error.message || '暂时无法回答', 'assistant');
         if (!input.value.trim()) input.value = question;
       } finally {
+        if (renderFrame) window.cancelAnimationFrame(renderFrame);
         progress.stop();
         if (activeRequest === request) {
           activeRequest = null;

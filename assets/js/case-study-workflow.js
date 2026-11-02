@@ -52,6 +52,12 @@
     if (className) node.className = className;
     return node;
   }
+  function reviewNode(value) {
+    var node = textNode('div', '', 'case-review-text rich-text');
+    if (window.CourseAiMarkdown) window.CourseAiMarkdown.renderInto(node, value);
+    else node.textContent = value;
+    return node;
+  }
 
   function file(input, label) {
     if (!input.files || !input.files[0]) throw new Error('请先选择' + label + '。');
@@ -98,7 +104,7 @@
     });
     target.appendChild(list);
     target.appendChild(textNode('h3', 'AI 文字核查补充'));
-    target.appendChild(textNode('div', data.ai_notes || '', 'case-review-text'));
+    target.appendChild(reviewNode(data.ai_notes || ''));
   }
 
   function renderContent(target, data) {
@@ -110,7 +116,7 @@
     });
     target.appendChild(list);
     target.appendChild(textNode('h3', 'AI 初步意见'));
-    target.appendChild(textNode('div', data.ai_review || '', 'case-review-text'));
+    target.appendChild(reviewNode(data.ai_review || ''));
   }
 
   function renderSubmit(target, data, initial) {
